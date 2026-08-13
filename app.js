@@ -1005,6 +1005,55 @@ function drawRadarChart(game) {
   ctx.stroke();
 }
 
+// Context-Aware Football Commentary Generator
+function getContextAwareHotTake(game, adj) {
+  const diff = adj.projUt - adj.projOpp;
+  const isClose = Math.abs(diff) <= 7;
+  const isOneScore = Math.abs(diff) <= 8;
+  const isBigWin = diff >= 17;
+  const isTexasWin = diff > 0;
+
+  // Specific rivalry & marquee matchup logic
+  if (game.id === 'week-12') { // Texas A&M
+    if (isClose) return "Thanksgiving war in Austin. 1-possession dogfight decided by a 4th quarter defensive stop. Hook 'Em! 🤘";
+    if (isTexasWin) return "State bragging rights secured. Ground game wears down A&M in the 4th quarter. Hook 'Em! 🤘";
+    return "Hostile rivalry clash. A&M defensive front causes trouble in a brutal 60-minute battle.";
+  }
+
+  if (game.id === 'week-2') { // Ohio State
+    if (isClose) return "National Game of the Year. Razor-thin battle decided by Manning's 2-minute drill in the 4th.";
+    if (isTexasWin) return "Statement win on ABC Primetime! Explosive perimeter playmakers stretch Ohio State defense.";
+    return "Heavyweight slugfest. Ohio State front four limits Texas explosives in a 4-quarter war.";
+  }
+
+  if (game.id === 'week-6') { // Oklahoma Red River
+    if (isClose) return "The Golden Hat stays in Austin! Red River shootout comes down to a clutch 4th quarter stop.";
+    return "Red River beatdown. Texas offensive line dominates the line of scrimmage in Dallas. Hook 'Em! 🤘";
+  }
+
+  if (game.id === 'week-9') { // LSU
+    if (isClose) return isTexasWin ? "Surviving Saturday night in Death Valley! Huge 4th quarter clutch drive for the win." : "Brutal Saturday night in Death Valley. Hostile environment edges out a 3-point heartbreaker.";
+    return isTexasWin ? "Dominant statement road win in Baton Rouge to cement CFP #1 seed positioning." : "Hostile Death Valley crowd disrupts offensive rhythm on the road.";
+  }
+
+  if (game.id === 'week-7') { // Tennessee
+    return isClose ? "Neyland Stadium thriller. 1-possession clash sealed by a late Texas takeaway." : "Texas silences 102,000 in Knoxville with balanced attack and pass rush dominance.";
+  }
+
+  if (game.id === 'week-4') { // Ole Miss
+    return "High-octane SEC shootout. Texas defense generates crucial 2nd half takeaways to pull away.";
+  }
+
+  // General margins
+  if (isBigWin) {
+    return "Total dominance in all 3 phases. Arch Manning and starters resting by early 4th quarter. Hook 'Em! 🤘";
+  } else if (isOneScore) {
+    return isTexasWin ? `Hard-fought 1-possession SEC battle. Texas executes in the clutch to win ${adj.projUt}-${adj.projOpp}.` : `Tough battle that slips away on late turnover. Texas falls in a tight ${adj.projOpp}-${adj.projUt} finish.`;
+  } else {
+    return isTexasWin ? `Texas controls time of possession and pulls away with 2nd half explosive scoring drives.` : `Challenging matchup where turnover differential dictates the outcome.`;
+  }
+}
+
 // Group Chat Hype Card Canvas Generator
 function drawHypeCard() {
   const canvas = document.getElementById('hypeCardCanvas');
@@ -1019,7 +1068,11 @@ function drawHypeCard() {
   const adj = calculateAdjustedMatchup(game);
 
   const userHandle = document.getElementById('cardUserHandle').value || "Jake's Official Pick";
-  const hotTake = document.getElementById('cardCustomNote').value || "Arch Manning throwing 4 TDs. Not even close. Hook 'Em! 🤘";
+  let customInput = document.getElementById('cardCustomNote');
+  let hotTake = customInput ? customInput.value : '';
+  if (!hotTake || hotTake.trim() === '') {
+    hotTake = getContextAwareHotTake(game, adj);
+  }
 
   // Background Gradient
   const bgGrad = ctx.createLinearGradient(0, 0, w, h);
@@ -1366,6 +1419,10 @@ document.addEventListener('DOMContentLoaded', () => {
   if (openCardBtn) {
     openCardBtn.addEventListener('click', () => {
       playSound('horn');
+      const curGameId = document.getElementById('cardGameSelect').value || 'week-6';
+      const curGame = SCHEDULE_DATA.find(x => x.id === curGameId) || SCHEDULE_DATA[5];
+      const curAdj = calculateAdjustedMatchup(curGame);
+      document.getElementById('cardCustomNote').value = getContextAwareHotTake(curGame, curAdj);
       document.getElementById('cardModal').classList.add('open');
       drawHypeCard();
     });
@@ -1378,6 +1435,8 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('simModal').classList.remove('open');
       if (state.activeModalGame) {
         document.getElementById('cardGameSelect').value = state.activeModalGame.id;
+        const curAdj = calculateAdjustedMatchup(state.activeModalGame);
+        document.getElementById('cardCustomNote').value = getContextAwareHotTake(state.activeModalGame, curAdj);
       }
       document.getElementById('cardModal').classList.add('open');
       drawHypeCard();
@@ -1389,8 +1448,17 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('cardModal').classList.remove('open');
   });
 
-  // Dynamic redraw on card control changes
-  if (cardSelect) cardSelect.addEventListener('change', drawHypeCard);
+  // Dynamic redraw and hot-take update on card control changes
+  if (cardSelect) {
+    cardSelect.addEventListener('change', () => {
+      const g = SCHEDULE_DATA.find(x => x.id === cardSelect.value);
+      if (g) {
+        const a = calculateAdjustedMatchup(g);
+        document.getElementById('cardCustomNote').value = getContextAwareHotTake(g, a);
+      }
+      drawHypeCard();
+    });
+  }
   document.getElementById('cardUserHandle').addEventListener('input', drawHypeCard);
   document.getElementById('cardCustomNote').addEventListener('input', drawHypeCard);
 
@@ -1415,6 +1483,10 @@ document.addEventListener('DOMContentLoaded', () => {
   if (mobileHypeBtn) {
     mobileHypeBtn.addEventListener('click', () => {
       playSound('horn');
+      const curGameId = document.getElementById('cardGameSelect').value || 'week-6';
+      const curGame = SCHEDULE_DATA.find(x => x.id === curGameId) || SCHEDULE_DATA[5];
+      const curAdj = calculateAdjustedMatchup(curGame);
+      document.getElementById('cardCustomNote').value = getContextAwareHotTake(curGame, curAdj);
       document.getElementById('cardModal').classList.add('open');
       drawHypeCard();
     });
