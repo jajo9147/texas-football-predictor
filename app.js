@@ -3,73 +3,73 @@
  * Powered by Monte Carlo Game Simulations & SP+ Analytics
  */
 
-// Schedule & Matchup Database
+// 2026 Texas Longhorns Fall Schedule & Matchup Database
 const SCHEDULE_DATA = [
   {
     id: 'week-1',
     week: 'WEEK 1',
-    date: 'Aug 29',
-    opponent: 'Colorado State',
-    oppAbbr: 'CSU',
+    date: 'Sep 5, 2026',
+    opponent: 'Texas State',
+    oppAbbr: 'TXST',
     oppRank: 'NR',
-    oppColor: '#1E4D2B',
-    oppSecondary: '#C8C372',
-    oppBadge: 'CSU',
+    oppColor: '#501214',
+    oppSecondary: '#B4975A',
+    oppBadge: 'TXST',
     isHome: true,
     isMarquee: false,
     isSec: false,
     stadium: 'DKR-Texas Memorial Stadium',
     location: 'Austin, TX',
-    vegasSpread: -31.5,
-    overUnder: 59.5,
-    baseWinProb: 98.2,
-    projScoreUt: 48,
-    projScoreOpp: 13,
+    vegasSpread: -34.5,
+    overUnder: 61.5,
+    baseWinProb: 98.6,
+    projScoreUt: 49,
+    projScoreOpp: 14,
     radarStats: {
-      ut: [95, 92, 88, 91, 94, 85],
-      opp: [55, 48, 52, 45, 50, 42]
+      ut: [95, 93, 89, 92, 94, 88],
+      opp: [52, 48, 50, 44, 46, 40]
     },
     scoutReport: {
-      xFactor: 'Explosive early offensive tempo to establish rhythm.',
-      keyMatchup: 'Texas WR corps vs CSU secondary single coverage.',
-      summary: 'Season opener at DKR. Arch Manning and the high-flying offense are projected to score early and often.'
+      xFactor: 'Fast offensive tempo to break in new offensive rhythm.',
+      keyMatchup: 'Arch Manning clean pocket delivery vs Texas State pass rush.',
+      summary: '2026 season opener at DKR in Austin. Warmup contest before the massive Week 2 Ohio State blockbuster.'
     }
   },
   {
     id: 'week-2',
     week: 'WEEK 2',
-    date: 'Sep 5',
-    opponent: 'Michigan',
-    oppAbbr: 'MICH',
-    oppRank: '#9',
-    oppColor: '#00274C',
-    oppSecondary: '#FFCB05',
-    oppBadge: 'M',
-    isHome: false,
+    date: 'Sep 12, 2026',
+    opponent: 'Ohio State',
+    oppAbbr: 'OSU',
+    oppRank: '#2',
+    oppColor: '#BB0000',
+    oppSecondary: '#666666',
+    oppBadge: 'O',
+    isHome: true,
     isMarquee: true,
     isSec: false,
-    stadium: 'Michigan Stadium (The Big House)',
-    location: 'Ann Arbor, MI',
-    rivalryName: 'Non-Conference Blockbuster',
-    vegasSpread: -7.5,
-    overUnder: 49.5,
-    baseWinProb: 73.5,
+    stadium: 'DKR-Texas Memorial Stadium',
+    location: 'Austin, TX',
+    rivalryName: '🔥 NATIONAL GAME OF THE YEAR (ABC)',
+    vegasSpread: -3.5,
+    overUnder: 55.5,
+    baseWinProb: 58.4,
     projScoreUt: 31,
-    projScoreOpp: 17,
+    projScoreOpp: 27,
     radarStats: {
-      ut: [94, 90, 85, 92, 89, 88],
-      opp: [78, 86, 84, 76, 75, 80]
+      ut: [96, 93, 90, 94, 91, 89],
+      opp: [95, 94, 92, 93, 92, 90]
     },
     scoutReport: {
-      xFactor: 'Interior offensive line protecting against Michigan defensive tackles.',
-      keyMatchup: 'Texas Pass Rush vs Michigan new starting quarterback.',
-      summary: 'Huge national spotlight non-conference clash. Texas speed on the perimeter stretches Michigan’s physical defense.'
+      xFactor: 'Arch Manning decision making under heavy 4-man pressure without blitzing.',
+      keyMatchup: 'Texas WR corps vs Ohio State 5-star lockdown cornerbacks.',
+      summary: '105,000+ deafening crowd at DKR on ABC Primetime! A clash of national championship titans.'
     }
   },
   {
     id: 'week-3',
     week: 'WEEK 3',
-    date: 'Sep 12',
+    date: 'Sep 19, 2026',
     opponent: 'UTSA',
     oppAbbr: 'UTSA',
     oppRank: 'NR',
@@ -81,88 +81,89 @@ const SCHEDULE_DATA = [
     isSec: false,
     stadium: 'DKR-Texas Memorial Stadium',
     location: 'Austin, TX',
-    vegasSpread: -34.0,
-    overUnder: 56.5,
-    baseWinProb: 97.4,
-    projScoreUt: 52,
+    vegasSpread: -31.0,
+    overUnder: 58.0,
+    baseWinProb: 96.5,
+    projScoreUt: 45,
     projScoreOpp: 14,
     radarStats: {
-      ut: [96, 94, 90, 93, 95, 88],
-      opp: [58, 52, 55, 48, 54, 46]
+      ut: [94, 92, 88, 91, 93, 86],
+      opp: [58, 54, 56, 50, 52, 48]
     },
     scoutReport: {
-      xFactor: 'Defensive depth rotation and special teams execution.',
-      keyMatchup: 'Texas running back room creating explosive chunk runs.',
-      summary: 'In-state matchup under the lights in Austin before SEC play begins.'
+      xFactor: 'Zero hangover focus following the Ohio State emotional high.',
+      keyMatchup: 'Texas running back room creating explosive outside zone runs.',
+      summary: 'In-state battle in Austin before opening the grueling SEC gauntlet.'
     }
   },
   {
     id: 'week-4',
     week: 'WEEK 4',
-    date: 'Sep 19',
-    opponent: 'Louisiana-Monroe',
-    oppAbbr: 'ULM',
-    oppRank: 'NR',
-    oppColor: '#800000',
-    oppSecondary: '#C5B783',
-    oppBadge: 'ULM',
+    date: 'Sep 26, 2026',
+    opponent: 'Ole Miss',
+    oppAbbr: 'MISS',
+    oppRank: '#11',
+    oppColor: '#14213D',
+    oppSecondary: '#CE1126',
+    oppBadge: 'REBS',
     isHome: true,
-    isMarquee: false,
-    isSec: false,
+    isMarquee: true,
+    isSec: true,
     stadium: 'DKR-Texas Memorial Stadium',
     location: 'Austin, TX',
-    vegasSpread: -42.5,
-    overUnder: 54.0,
-    baseWinProb: 99.1,
-    projScoreUt: 56,
-    projScoreOpp: 7,
+    rivalryName: '⚡ SEC Opener Shootout',
+    vegasSpread: -7.5,
+    overUnder: 64.5,
+    baseWinProb: 74.2,
+    projScoreUt: 38,
+    projScoreOpp: 28,
     radarStats: {
-      ut: [97, 95, 92, 94, 96, 90],
-      opp: [40, 42, 45, 38, 44, 35]
+      ut: [95, 91, 88, 93, 90, 88],
+      opp: [89, 81, 83, 86, 78, 82]
     },
     scoutReport: {
-      xFactor: 'Zero turnover discipline.',
-      keyMatchup: 'Texas 2nd team offensive line getting valuable development reps.',
-      summary: 'Tune-up contest before diving into the grueling SEC conference schedule.'
+      xFactor: 'Limiting Lane Kiffin rapid tempo and explosive 40+ yard pass plays.',
+      keyMatchup: 'Anthony Hill Jr. & Texas linebackers defending RPO pass keys.',
+      summary: 'SEC season opener under the lights at DKR against a high-octane Rebels offense.'
     }
   },
   {
     id: 'week-5',
     week: 'WEEK 5',
-    date: 'Sep 26',
+    date: 'Oct 3, 2026',
     opponent: 'Mississippi State',
     oppAbbr: 'MSST',
     oppRank: 'NR',
     oppColor: '#660000',
     oppSecondary: '#FFFFFF',
     oppBadge: 'MSU',
-    isHome: true,
+    isHome: false,
     isMarquee: false,
     isSec: true,
-    stadium: 'DKR-Texas Memorial Stadium',
-    location: 'Austin, TX',
-    vegasSpread: -24.5,
-    overUnder: 58.5,
-    baseWinProb: 91.5,
-    projScoreUt: 42,
+    stadium: 'Davis Wade Stadium',
+    location: 'Starkville, MS',
+    vegasSpread: -17.5,
+    overUnder: 54.0,
+    baseWinProb: 88.3,
+    projScoreUt: 38,
     projScoreOpp: 17,
     radarStats: {
-      ut: [94, 91, 89, 90, 92, 86],
-      opp: [68, 64, 66, 62, 65, 60]
+      ut: [93, 90, 87, 91, 89, 86],
+      opp: [69, 72, 70, 68, 67, 65]
     },
     scoutReport: {
-      xFactor: 'Disrupting Mississippi State quick passing release.',
-      keyMatchup: 'Anthony Hill Jr. diagnosing screen passes and edge containment.',
-      summary: 'SEC opener for Texas at DKR. High expectation of defensive havoc and points.'
+      xFactor: 'Dealing with 55,000 ringing cowbells in Starkville on road silent snap count.',
+      keyMatchup: 'Texas offensive line establishing ground dominance.',
+      summary: 'First true SEC road test before heading to the Cotton Bowl.'
     }
   },
   {
     id: 'week-6',
     week: 'WEEK 6',
-    date: 'Oct 10',
+    date: 'Oct 10, 2026',
     opponent: 'Oklahoma',
     oppAbbr: 'OU',
-    oppRank: '#12',
+    oppRank: '#10',
     oppColor: '#841617',
     oppSecondary: '#FDF9D8',
     oppBadge: 'OU',
@@ -172,89 +173,59 @@ const SCHEDULE_DATA = [
     stadium: 'Cotton Bowl (Fair Park)',
     location: 'Dallas, TX',
     rivalryName: '🏆 The Red River Rivalry',
-    vegasSpread: -8.5,
-    overUnder: 57.5,
-    baseWinProb: 76.8,
-    projScoreUt: 35,
+    vegasSpread: -6.5,
+    overUnder: 58.5,
+    baseWinProb: 71.8,
+    projScoreUt: 34,
     projScoreOpp: 24,
     radarStats: {
-      ut: [95, 91, 88, 93, 91, 87],
-      opp: [81, 83, 79, 82, 80, 84]
+      ut: [95, 91, 89, 93, 90, 88],
+      opp: [84, 85, 82, 84, 83, 85]
     },
     scoutReport: {
-      xFactor: 'Red zone touchdown conversion efficiency & turnover luck in Cotton Bowl chaos.',
-      keyMatchup: 'Arch Manning vs Brent Venables blitz disguise packages.',
-      summary: 'The Golden Hat is on the line at the Texas State Fair! One of college football’s fiercest rivalries.'
+      xFactor: 'Turnover differential and red-zone TD percentage amidst 50/50 Cotton Bowl split.',
+      keyMatchup: 'Arch Manning vs Brent Venables disguised blitz packages.',
+      summary: 'The Golden Hat is on the line at the Texas State Fair. Pure rivalry intensity!'
     }
   },
   {
     id: 'week-7',
     week: 'WEEK 7',
-    date: 'Oct 17',
-    opponent: 'Georgia',
-    oppAbbr: 'UGA',
-    oppRank: '#1',
-    oppColor: '#BA0C2F',
-    oppSecondary: '#000000',
-    oppBadge: 'UGA',
-    isHome: true,
+    date: 'Oct 17, 2026',
+    opponent: 'Tennessee',
+    oppAbbr: 'TENN',
+    oppRank: '#7',
+    oppColor: '#FF8200',
+    oppSecondary: '#58595B',
+    oppBadge: 'VOLS',
+    isHome: false,
     isMarquee: true,
     isSec: true,
-    stadium: 'DKR-Texas Memorial Stadium',
-    location: 'Austin, TX',
-    rivalryName: '🔥 SEC Game of the Century',
-    vegasSpread: -2.5,
-    overUnder: 53.5,
-    baseWinProb: 55.4,
-    projScoreUt: 28,
-    projScoreOpp: 27,
+    stadium: 'Neyland Stadium',
+    location: 'Knoxville, TN',
+    rivalryName: '🔥 Battle of the Real UT',
+    vegasSpread: -3.5,
+    overUnder: 62.0,
+    baseWinProb: 62.4,
+    projScoreUt: 35,
+    projScoreOpp: 30,
     radarStats: {
-      ut: [96, 92, 89, 93, 90, 89],
-      opp: [94, 95, 93, 95, 92, 91]
+      ut: [95, 92, 88, 92, 90, 88],
+      opp: [90, 88, 86, 89, 87, 85]
     },
     scoutReport: {
-      xFactor: '3rd down conversion rate and field position battles.',
-      keyMatchup: 'Texas edge rushers vs Georgia elite offensive tackles.',
-      summary: '105,000 screaming Longhorns fans at DKR. The absolute heavyweight clash with #1 seed CFP implications.'
+      xFactor: '102,000 screaming fans in Checkerboard Neyland Stadium. Neutralizing Vol edge rushers.',
+      keyMatchup: 'Texas secondary containing wide-split vertical receiver routes.',
+      summary: 'Massive top-10 showdown in Knoxville with direct SEC Championship and CFP seeding at stake.'
     }
   },
   {
     id: 'week-8',
     week: 'WEEK 8',
-    date: 'Oct 24',
-    opponent: 'Vanderbilt',
-    oppAbbr: 'VANDY',
-    oppRank: 'NR',
-    oppColor: '#866D4B',
-    oppSecondary: '#000000',
-    oppBadge: 'VU',
-    isHome: false,
-    isMarquee: false,
-    isSec: true,
-    stadium: 'FirstBank Stadium',
-    location: 'Nashville, TN',
-    vegasSpread: -21.0,
-    overUnder: 52.0,
-    baseWinProb: 89.2,
-    projScoreUt: 38,
-    projScoreOpp: 17,
-    radarStats: {
-      ut: [92, 90, 87, 91, 88, 85],
-      opp: [66, 68, 64, 65, 62, 60]
-    },
-    scoutReport: {
-      xFactor: 'Avoiding a post-Georgia emotional trap game on the road.',
-      keyMatchup: 'Texas run defense stifling Vanderbilt option packages.',
-      summary: 'Road trip to Nashville. Focus and execution are the keys to a decisive win.'
-    }
-  },
-  {
-    id: 'week-9',
-    week: 'WEEK 9',
-    date: 'Nov 7',
+    date: 'Oct 24, 2026',
     opponent: 'Florida',
     oppAbbr: 'UF',
-    oppRank: '#19',
+    oppRank: '#18',
     oppColor: '#0021A5',
     oppSecondary: '#FA4616',
     oppBadge: 'UF',
@@ -264,111 +235,142 @@ const SCHEDULE_DATA = [
     stadium: 'DKR-Texas Memorial Stadium',
     location: 'Austin, TX',
     rivalryName: '🐊 SEC Showcase',
-    vegasSpread: -14.5,
-    overUnder: 56.0,
-    baseWinProb: 84.6,
+    vegasSpread: -13.5,
+    overUnder: 56.5,
+    baseWinProb: 83.5,
     projScoreUt: 37,
     projScoreOpp: 20,
     radarStats: {
       ut: [94, 91, 88, 92, 91, 87],
-      opp: [79, 75, 78, 74, 76, 73]
+      opp: [80, 77, 79, 76, 78, 75]
     },
     scoutReport: {
-      xFactor: 'Vertical pass protection against Florida dynamic front 7.',
-      keyMatchup: 'Texas slot receiver mismatch against Gators safety shell.',
-      summary: 'Electric home atmosphere at DKR as Texas hosts Florida in late season SEC action.'
+      xFactor: 'Pass protection against Florida defensive interior push.',
+      keyMatchup: 'Texas play-action passing attack stretching Florida secondary.',
+      summary: 'Home SEC clash at DKR. Texas looks to stay on track for the SEC title race.'
+    }
+  },
+  {
+    id: 'week-9',
+    week: 'WEEK 9',
+    date: 'Nov 7, 2026',
+    opponent: 'LSU',
+    oppAbbr: 'LSU',
+    oppRank: '#5',
+    oppColor: '#461D7C',
+    oppSecondary: '#FDD023',
+    oppBadge: 'TIGERS',
+    isHome: false,
+    isMarquee: true,
+    isSec: true,
+    stadium: 'Tiger Stadium (Death Valley)',
+    location: 'Baton Rouge, LA',
+    rivalryName: '🐯 Death Valley Saturday Night War',
+    vegasSpread: -1.5,
+    overUnder: 59.5,
+    baseWinProb: 54.8,
+    projScoreUt: 31,
+    projScoreOpp: 28,
+    radarStats: {
+      ut: [95, 93, 89, 93, 91, 89],
+      opp: [93, 92, 90, 91, 89, 90]
+    },
+    scoutReport: {
+      xFactor: '102,321 fans under the lights in Baton Rouge. Surviving early momentum surges.',
+      keyMatchup: 'Texas edge pressure forcing LSU QB out of pocket.',
+      summary: 'Saturday night in Death Valley. One of the toughest road tests in all of college football.'
     }
   },
   {
     id: 'week-10',
     week: 'WEEK 10',
-    date: 'Nov 14',
+    date: 'Nov 14, 2026',
     opponent: 'Arkansas',
     oppAbbr: 'ARK',
     oppRank: 'NR',
     oppColor: '#9D2235',
     oppSecondary: '#FFFFFF',
     oppBadge: 'ARK',
-    isHome: false,
+    isHome: true,
     isMarquee: true,
     isSec: true,
-    stadium: 'Razorback Stadium',
-    location: 'Fayetteville, AR',
-    rivalryName: '🐗 Southwest Classic Heritage',
-    vegasSpread: -12.5,
-    overUnder: 55.0,
-    baseWinProb: 81.3,
-    projScoreUt: 34,
-    projScoreOpp: 21,
+    stadium: 'DKR-Texas Memorial Stadium',
+    location: 'Austin, TX',
+    rivalryName: '🐗 Historic Rivalry Renewed',
+    vegasSpread: -16.5,
+    overUnder: 53.5,
+    baseWinProb: 88.9,
+    projScoreUt: 38,
+    projScoreOpp: 17,
     radarStats: {
-      ut: [93, 89, 87, 90, 89, 86],
-      opp: [74, 76, 75, 72, 73, 70]
+      ut: [93, 91, 88, 91, 90, 87],
+      opp: [74, 76, 75, 73, 72, 71]
     },
     scoutReport: {
-      xFactor: 'Surviving the first quarter Razorback crowd frenzy in Fayetteville.',
-      keyMatchup: 'Texas linebackers containing Arkansas mobile QB on broken plays.',
-      summary: 'Deep-rooted historic rivalry renewed in the SEC. High energy road environment.'
+      xFactor: 'Disciplined gap containment on Arkansas QB run options.',
+      keyMatchup: 'Texas wideouts winning 1-on-1 contested catches.',
+      summary: 'Historic rivalry in Austin as Texas enters the late November championship push.'
     }
   },
   {
     id: 'week-11',
     week: 'WEEK 11',
-    date: 'Nov 21',
-    opponent: 'Kentucky',
-    oppAbbr: 'UK',
-    oppRank: '#24',
-    oppColor: '#0033A0',
-    oppSecondary: '#FFFFFF',
-    oppBadge: 'UK',
-    isHome: true,
+    date: 'Nov 21, 2026',
+    opponent: 'Missouri',
+    oppAbbr: 'MIZZOU',
+    oppRank: '#16',
+    oppColor: '#F1B82D',
+    oppSecondary: '#000000',
+    oppBadge: 'MIZ',
+    isHome: false,
     isMarquee: false,
     isSec: true,
-    stadium: 'DKR-Texas Memorial Stadium',
-    location: 'Austin, TX',
-    vegasSpread: -18.5,
-    overUnder: 48.0,
-    baseWinProb: 88.7,
+    stadium: 'Faurot Field (Memorial Stadium)',
+    location: 'Columbia, MO',
+    vegasSpread: -9.5,
+    overUnder: 51.0,
+    baseWinProb: 77.2,
     projScoreUt: 33,
-    projScoreOpp: 13,
+    projScoreOpp: 21,
     radarStats: {
-      ut: [93, 91, 89, 91, 90, 88],
-      opp: [72, 80, 77, 78, 71, 75]
+      ut: [93, 91, 88, 91, 90, 87],
+      opp: [81, 83, 80, 82, 81, 79]
     },
     scoutReport: {
-      xFactor: 'Stopping Kentucky physical rushing attack on early downs.',
-      keyMatchup: 'Texas interior defensive tackles vs Kentucky veteran center.',
-      summary: 'Senior Night in Austin with high SEC Championship seeding stakes on the line.'
+      xFactor: 'Cold November weather execution and third-down conversions.',
+      keyMatchup: 'Texas interior D-line stopping Missouri inside power run.',
+      summary: 'Tough November road trip to Columbia with SEC Championship seeding on the line.'
     }
   },
   {
     id: 'week-12',
     week: 'WEEK 12',
-    date: 'Nov 28',
+    date: 'Nov 27, 2026',
     opponent: 'Texas A&M',
     oppAbbr: 'TAMU',
-    oppRank: '#8',
+    oppRank: '#6',
     oppColor: '#500000',
     oppSecondary: '#FFFFFF',
     oppBadge: 'A&M',
-    isHome: false,
+    isHome: true,
     isMarquee: true,
     isSec: true,
-    stadium: 'Kyle Field',
-    location: 'College Station, TX',
-    rivalryName: '🔥 The Lone Star Showdown',
+    stadium: 'DKR-Texas Memorial Stadium',
+    location: 'Austin, TX',
+    rivalryName: '🔥 The Lone Star Showdown (Thanksgiving Climax)',
     vegasSpread: -4.5,
-    overUnder: 54.5,
-    baseWinProb: 68.2,
+    overUnder: 55.5,
+    baseWinProb: 66.8,
     projScoreUt: 31,
     projScoreOpp: 24,
     radarStats: {
       ut: [95, 93, 90, 94, 92, 90],
-      opp: [87, 89, 86, 88, 85, 87]
+      opp: [89, 91, 88, 90, 88, 89]
     },
     scoutReport: {
-      xFactor: '107,000 hostile 12th Man crowd noise. Silent cadence execution.',
-      keyMatchup: 'Texas offensive tackles vs A&M 5-star edge rushers.',
-      summary: 'Thanksgiving weekend war in College Station! State bragging rights and CFP playoff ticket at stake.'
+      xFactor: 'State bragging rights, SEC Championship berth, and CFP Bye on the line!',
+      keyMatchup: 'Arch Manning vs A&M 5-star pass rush front four.',
+      summary: 'Thanksgiving weekend war in Austin! The entire state of Texas comes to a complete standstill.'
     }
   }
 ];
@@ -461,19 +463,19 @@ function playSound(type) {
 
 // Calculate adjusted win probability and scores based on sliders
 function calculateAdjustedMatchup(game) {
-  const qbFactor = (state.sliders.qbRating - 100) * 0.25; // +/- %
-  const defFactor = (state.sliders.defense - 100) * 0.22;
-  const toFactor = state.sliders.turnover * 4.5;
-  const crowdImpact = game.isHome ? (state.sliders.crowd - 100) * 0.15 : -(state.sliders.crowd - 100) * 0.15;
+  const qbFactor = (state.sliders.qbRating - 100) * 0.65; // High responsiveness for Arch Manning form
+  const defFactor = (state.sliders.defense - 100) * 0.50; // High responsiveness for defense
+  const toFactor = state.sliders.turnover * 5.0;          // Turnovers
+  const crowdImpact = game.isHome ? (state.sliders.crowd - 100) * 0.35 : -(state.sliders.crowd - 100) * 0.35;
 
   let winProb = game.baseWinProb + qbFactor + defFactor + toFactor + crowdImpact;
-  winProb = Math.max(1, Math.min(99.4, winProb));
+  winProb = Math.max(1.0, Math.min(99.4, winProb));
 
-  // Score adjustments
-  const utPtsDelta = Math.round((qbFactor * 0.3) + (toFactor * 0.4) + (crowdImpact * 0.15));
-  const oppPtsDelta = Math.round(-(defFactor * 0.25) - (toFactor * 0.3) - (crowdImpact * 0.15));
+  // Dynamic score adjustments
+  const utPtsDelta = Math.round((qbFactor * 0.35) + (toFactor * 0.5) + (crowdImpact * 0.2));
+  const oppPtsDelta = Math.round(-(defFactor * 0.35) - (toFactor * 0.4) - (crowdImpact * 0.2));
 
-  const projUt = Math.max(10, game.projScoreUt + utPtsDelta);
+  const projUt = Math.max(6, game.projScoreUt + utPtsDelta);
   const projOpp = Math.max(3, game.projScoreOpp + oppPtsDelta);
 
   return {
@@ -481,6 +483,16 @@ function calculateAdjustedMatchup(game) {
     projUt,
     projOpp
   };
+}
+
+// Automatically recalculate every matchup pick and playoff seeding when sliders move
+function updatePicksFromTuning() {
+  SCHEDULE_DATA.forEach(game => {
+    const adj = calculateAdjustedMatchup(game);
+    state.gamePicks[game.id] = adj.winProb >= 50.0 ? 'W' : 'L';
+  });
+  renderSchedule();
+  updateTopMetricsAndPlayoff();
 }
 
 // Monte Carlo Drive Simulator for Game Modal
@@ -491,7 +503,6 @@ function simulateGameDrives(game, adjusted) {
   let oppScore = 0;
 
   quarters.forEach((q, qIndex) => {
-    // 3 to 4 possessions per quarter per team
     const numDrives = 3;
     for (let i = 0; i < numDrives; i++) {
       // Texas Drive
@@ -504,17 +515,17 @@ function simulateGameDrives(game, adjusted) {
       let utType = '';
       if (utDriveRoll < utTdThreshold) {
         utScore += 7;
-        utResult = 'TOUCHDOWN! Arch Manning deep vertical strike (7 Pts)';
+        utResult = 'TOUCHDOWN! Arch Manning explosive scoring drive (7 Pts)';
         utType = 'td';
       } else if (utDriveRoll < utFgThreshold) {
         utScore += 3;
-        utResult = 'FIELD GOAL! 44-yd kick splits uprights (3 Pts)';
+        utResult = 'FIELD GOAL! 45-yd kick splits uprights (3 Pts)';
         utType = 'fg';
       } else if (utDriveRoll < utToThreshold) {
-        utResult = 'TURNOVER! Opponent strips football on 3rd down';
+        utResult = 'TURNOVER! Pass picked off or fumble lost on 3rd down';
         utType = 'turnover';
       } else {
-        utResult = 'PUNT. Solid defensive pressure forces 3-and-out';
+        utResult = 'PUNT. Defensive pressure forces 3-and-out';
         utType = 'punt';
       }
 
@@ -536,17 +547,17 @@ function simulateGameDrives(game, adjusted) {
       let oppType = '';
       if (oppDriveRoll < oppTdThreshold) {
         oppScore += 7;
-        oppResult = `TOUCHDOWN! ${game.opponent} explosive rush play (7 Pts)`;
+        oppResult = `TOUCHDOWN! ${game.opponent} explosive score (7 Pts)`;
         oppType = 'td';
       } else if (oppDriveRoll < oppFgThreshold) {
         oppScore += 3;
-        oppResult = `FIELD GOAL! ${game.opponent} converts red zone drive (3 Pts)`;
+        oppResult = `FIELD GOAL! ${game.opponent} converts red zone kick (3 Pts)`;
         oppType = 'fg';
       } else if (oppDriveRoll < oppToThreshold) {
-        oppResult = `TURNOVER! Texas defense forces interception!`;
+        oppResult = `TURNOVER! Texas defense forces takeaway!`;
         oppType = 'turnover';
       } else {
-        oppResult = `PUNT. Texas pass rush records sack for loss`;
+        oppResult = `PUNT. Texas pass rush records sack`;
         oppType = 'punt';
       }
 
@@ -560,7 +571,6 @@ function simulateGameDrives(game, adjusted) {
     }
   });
 
-  // Handle Tie Game in OT
   if (utScore === oppScore) {
     if (adjusted.winProb >= 50) {
       utScore += 6;
@@ -583,11 +593,7 @@ function simulateGameDrives(game, adjusted) {
     }
   }
 
-  return {
-    utScore,
-    oppScore,
-    drives
-  };
+  return { utScore, oppScore, drives };
 }
 
 // Render Schedule Grid Cards
@@ -632,9 +638,9 @@ function renderSchedule() {
 
           <div class="score-center">
             <div class="proj-score-box">
-              <span>${adj.projUt}</span>
+              <span style="color: ${adj.projUt > adj.projOpp ? '#FFF' : '#EF4444'}">${adj.projUt}</span>
               <span class="score-divider">-</span>
-              <span>${adj.projOpp}</span>
+              <span style="color: ${adj.projOpp > adj.projUt ? '#FF9B42' : '#9CA3AF'}">${adj.projOpp}</span>
             </div>
             <div class="vegas-line">${game.vegasSpread > 0 ? `+${game.vegasSpread}` : game.vegasSpread} | O/U ${game.overUnder}</div>
           </div>
@@ -652,11 +658,11 @@ function renderSchedule() {
 
         <div class="card-stats-row">
           <div class="prob-labels-sm">
-            <span class="text-orange">Win Prob: ${adj.winProb}%</span>
+            <span class="${adj.winProb >= 50 ? 'text-orange' : 'text-danger'}">Win Prob: ${adj.winProb}%</span>
             <span class="text-muted">${(100 - adj.winProb).toFixed(1)}%</span>
           </div>
           <div class="prob-track-sm">
-            <div class="prob-fill-sm" style="width: ${adj.winProb}%;"></div>
+            <div class="prob-fill-sm" style="width: ${adj.winProb}%; background: ${adj.winProb >= 50 ? 'linear-gradient(90deg, var(--color-burnt-orange), var(--color-orange-light))' : 'linear-gradient(90deg, #991B1B, #EF4444)'}"></div>
           </div>
         </div>
 
@@ -717,10 +723,10 @@ function updateTopMetricsAndPlayoff() {
   const playoffProbDisplay = document.getElementById('playoffProbDisplay');
 
   if (wins === 12) {
-    nattyOddsElem.innerText = '+275';
-    secProbElem.innerText = '58.2%';
-    playoffTitle.innerText = 'PROJECTED SEED: #1 (UNDISPUTED SEC CHAMPION)';
-    playoffDesc.innerText = '12-0 Perfect Regular Season! First round bye secured to the Sugar Bowl quarterfinals.';
+    nattyOddsElem.innerText = '+220';
+    secProbElem.innerText = '64.5%';
+    playoffTitle.innerText = 'PROJECTED SEED: #1 (UNDISPUTED SEC CHAMPION - FIRST ROUND BYE)';
+    playoffDesc.innerText = '12-0 Perfect Season! Arch Manning leads Texas to the #1 overall seed in Atlanta and CFP Natty favorite status.';
     playoffProbDisplay.innerText = '99.9%';
   } else if (wins === 11) {
     nattyOddsElem.innerText = '+420';
@@ -740,12 +746,24 @@ function updateTopMetricsAndPlayoff() {
     playoffTitle.innerText = 'PROJECTED SEED: #10 (AT-LARGE ROAD CFP GAME)';
     playoffDesc.innerText = '9-3 in the brutal SEC schedule squeaks into the 12-team field on the road.';
     playoffProbDisplay.innerText = '62.4%';
+  } else if (wins === 8) {
+    nattyOddsElem.innerText = '+6500';
+    secProbElem.innerText = '1.5%';
+    playoffTitle.innerText = 'CFP BUBBLE: OUTSIDE THE 12-TEAM CUTLINE (RELIAQUEST BOWL)';
+    playoffDesc.innerText = '8-4 record leaves Texas just outside the CFP field. Headed to Tampa for the ReliaQuest / Citrus Bowl.';
+    playoffProbDisplay.innerText = '28.0%';
+  } else if (wins === 7) {
+    nattyOddsElem.innerText = '+25000';
+    secProbElem.innerText = '0.1%';
+    playoffTitle.innerText = 'CFP STATUS: ELIMINATED (TEXAS BOWL / LAS VEGAS BOWL)';
+    playoffDesc.innerText = '7-5 disappointing campaign. Arch Manning & offense struggled in SEC road gauntlet.';
+    playoffProbDisplay.innerText = '4.5%';
   } else {
-    nattyOddsElem.innerText = '+4500';
-    secProbElem.innerText = '1.1%';
-    playoffTitle.innerText = 'PROJECTED SEED: ON THE CFP BUBBLE / OUT';
-    playoffDesc.innerText = `${wins}-${losses} record places Texas outside the automatic CFP bid threshold.`;
-    playoffProbDisplay.innerText = '24.0%';
+    nattyOddsElem.innerText = 'OFF BOARD';
+    secProbElem.innerText = '0.0%';
+    playoffTitle.innerText = 'CFP STATUS: DISASTER SEASON (ARCH MANNING BENCHED / NO BOWL)';
+    playoffDesc.innerText = `${wins}-${losses} record. Total meltdown in Austin. Offensive and defensive efficiency collapsed.`;
+    playoffProbDisplay.innerText = '0.0%';
   }
 }
 
@@ -1096,7 +1114,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Slider Listeners
+  // Slider Listeners with Real-Time Prediction Engine Update
   const qbSlider = document.getElementById('qbRatingSlider');
   const defSlider = document.getElementById('defenseSlider');
   const toSlider = document.getElementById('turnoverSlider');
@@ -1105,16 +1123,32 @@ document.addEventListener('DOMContentLoaded', () => {
   if (qbSlider) {
     qbSlider.addEventListener('input', (e) => {
       state.sliders.qbRating = parseInt(e.target.value);
-      document.getElementById('qbValDisplay').innerText = `${state.sliders.qbRating}% (${state.sliders.qbRating > 110 ? 'God Tier' : state.sliders.qbRating < 90 ? 'Struggling' : 'Heisman Mode'})`;
-      renderSchedule();
+      const val = state.sliders.qbRating;
+      let label = '100% (Heisman Candidate)';
+      if (val >= 140) label = `${val}% (🔥 Heisman Winner / God Tier)`;
+      else if (val >= 115) label = `${val}% (Elite All-American)`;
+      else if (val >= 90) label = `${val}% (Heisman Form)`;
+      else if (val >= 65) label = `${val}% (⚠️ Struggling / Interceptions)`;
+      else label = `${val}% (🚨 Benched / Disaster)`;
+      
+      document.getElementById('qbValDisplay').innerText = label;
+      updatePicksFromTuning();
     });
   }
 
   if (defSlider) {
     defSlider.addEventListener('input', (e) => {
       state.sliders.defense = parseInt(e.target.value);
-      document.getElementById('defValDisplay').innerText = `${state.sliders.defense}% (${state.sliders.defense > 110 ? 'Iron Wall' : state.sliders.defense < 90 ? 'Vulnerable' : 'Lockdown'})`;
-      renderSchedule();
+      const val = state.sliders.defense;
+      let label = '100% (Dominant SEC Defense)';
+      if (val >= 140) label = `${val}% (🛡️ Steel Curtain / Lockdown)`;
+      else if (val >= 115) label = `${val}% (Top 5 Defense)`;
+      else if (val >= 90) label = `${val}% (Dominant)`;
+      else if (val >= 65) label = `${val}% (⚠️ Vulnerable Pass Rush)`;
+      else label = `${val}% (🚨 Paper Defense / Bleeding Points)`;
+
+      document.getElementById('defValDisplay').innerText = label;
+      updatePicksFromTuning();
     });
   }
 
@@ -1122,16 +1156,25 @@ document.addEventListener('DOMContentLoaded', () => {
     toSlider.addEventListener('input', (e) => {
       state.sliders.turnover = parseInt(e.target.value);
       const val = state.sliders.turnover;
-      document.getElementById('turnoverValDisplay').innerText = val > 0 ? `+${val} Takeaways` : val < 0 ? `${val} Bad Breaks` : 'Neutral (0)';
-      renderSchedule();
+      let label = 'Neutral (0)';
+      if (val > 0) label = `+${val} (⚡ Takeaway Frenzy)`;
+      else if (val < 0) label = `${val} (🚨 Fumble / Pick Nightmares)`;
+
+      document.getElementById('turnoverValDisplay').innerText = label;
+      updatePicksFromTuning();
     });
   }
 
   if (crowdSlider) {
     crowdSlider.addEventListener('input', (e) => {
       state.sliders.crowd = parseInt(e.target.value);
-      document.getElementById('crowdValDisplay').innerText = state.sliders.crowd > 110 ? 'Deafening 125dB' : state.sliders.crowd < 90 ? 'Subdued' : 'DKR 105k+ Roar';
-      renderSchedule();
+      const val = state.sliders.crowd;
+      let label = 'DKR 105k+ Roar (100%)';
+      if (val >= 135) label = `Deafening 130dB+ Hostility (${val}%)`;
+      else if (val <= 70) label = `Silent Opponent Stadium (${val}%)`;
+
+      document.getElementById('crowdValDisplay').innerText = label;
+      updatePicksFromTuning();
     });
   }
 
@@ -1143,11 +1186,11 @@ document.addEventListener('DOMContentLoaded', () => {
     defSlider.value = 100;
     toSlider.value = 0;
     crowdSlider.value = 100;
-    document.getElementById('qbValDisplay').innerText = '100% (Heisman Mode)';
+    document.getElementById('qbValDisplay').innerText = '100% (Heisman Form)';
     document.getElementById('defValDisplay').innerText = '100% (Dominant)';
     document.getElementById('turnoverValDisplay').innerText = 'Neutral (0)';
     document.getElementById('crowdValDisplay').innerText = 'DKR 105k+ Roar';
-    renderSchedule();
+    updatePicksFromTuning();
     showToast('Simulation weights reset to baseline.');
   });
 
