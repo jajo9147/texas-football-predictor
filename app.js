@@ -1215,6 +1215,70 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('cardUserHandle').addEventListener('input', drawHypeCard);
   document.getElementById('cardCustomNote').addEventListener('input', drawHypeCard);
 
+  // Mobile Bottom Navigation Click Handlers
+  document.querySelectorAll('.mobile-nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const targetId = item.getAttribute('data-target');
+      if (targetId) {
+        playSound('click');
+        document.querySelectorAll('.mobile-nav-item').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        const targetElem = document.querySelector(`.${targetId}`);
+        if (targetElem) {
+          targetElem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    });
+  });
+
+  // Mobile Floating Hype Button
+  const mobileHypeBtn = document.getElementById('mobileHypeBtn');
+  if (mobileHypeBtn) {
+    mobileHypeBtn.addEventListener('click', () => {
+      playSound('horn');
+      document.getElementById('cardModal').classList.add('open');
+      drawHypeCard();
+    });
+  }
+
+  // Native Mobile Share API Handler
+  const mobileShareBtn = document.getElementById('mobileNativeShareBtn');
+  if (mobileShareBtn) {
+    mobileShareBtn.addEventListener('click', async () => {
+      playSound('whistle');
+      const canvas = document.getElementById('hypeCardCanvas');
+      const status = document.getElementById('cardCopyStatus');
+
+      try {
+        canvas.toBlob(async (blob) => {
+          const file = new File([blob], 'texas-longhorns-pick.png', { type: 'image/png' });
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              title: 'Texas Longhorns AI Season Prediction',
+              text: 'Check out this Texas Longhorns game prediction from the AI Season Oracle! 🤘',
+              files: [file]
+            });
+            status.innerText = '✅ Shared successfully!';
+          } else if (navigator.share) {
+            await navigator.share({
+              title: 'Texas Longhorns AI Season Prediction',
+              text: 'Check out this Texas Longhorns game prediction from the AI Season Oracle! 🤘',
+              url: window.location.href
+            });
+            status.innerText = '✅ Link shared!';
+          } else {
+            // Fallback to image download
+            document.getElementById('downloadCardBtn').click();
+          }
+        });
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          document.getElementById('downloadCardBtn').click();
+        }
+      }
+    });
+  }
+
   // Download Card PNG
   document.getElementById('downloadCardBtn').addEventListener('click', () => {
     playSound('whistle');
@@ -1223,7 +1287,7 @@ document.addEventListener('DOMContentLoaded', () => {
     link.download = `texas-longhorns-prediction-${Date.now()}.png`;
     link.href = canvas.toDataURL('image/png');
     link.click();
-    showToast('📸 Card downloaded! Send it in the group chat.');
+    showToast('📸 Card saved to photos!');
   });
 
   // Copy Card Image to Clipboard

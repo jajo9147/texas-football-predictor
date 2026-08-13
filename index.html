@@ -2,8 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Texas Longhorns Football Season Oracle | AI Game Simulator & CFP Calculator</title>
+  
+  <!-- Mobile App Manifest & Web App Capable -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Texas Oracle">
   
   <!-- OpenGraph Meta Tags for Rich Group Chat Previews -->
   <meta property="og:title" content="Texas Longhorns Football Season Predictor & AI Game Simulator">
@@ -444,8 +449,11 @@
           </div>
 
           <div class="button-row">
+            <button id="mobileNativeShareBtn" class="action-btn native-share-btn">
+              <i class="fa-solid fa-share-nodes"></i> Share to Chat / iMessage
+            </button>
             <button id="downloadCardBtn" class="action-btn hype-btn">
-              <i class="fa-solid fa-download"></i> Download High-Res Image
+              <i class="fa-solid fa-download"></i> Save Image to Photos
             </button>
             <button id="copyCardBtn" class="action-btn copy-btn">
               <i class="fa-solid fa-copy"></i> Copy Image to Clipboard
@@ -505,6 +513,30 @@ gh repo create texas-football-predictor --public --source=. --push</code></pre>
 
   <!-- Toast Notification -->
   <div class="toast" id="toastMessage">Link copied to clipboard!</div>
+
+  <!-- Mobile Bottom Sticky Navigation Bar -->
+  <nav class="mobile-bottom-nav">
+    <button class="mobile-nav-item active" data-target="hero-section">
+      <i class="fa-solid fa-house"></i>
+      <span>Overview</span>
+    </button>
+    <button class="mobile-nav-item" data-target="schedule-section">
+      <i class="fa-solid fa-calendar-days"></i>
+      <span>Schedule</span>
+    </button>
+    <button class="mobile-nav-item" data-target="tuning-section">
+      <i class="fa-solid fa-sliders"></i>
+      <span>Tune AI</span>
+    </button>
+    <button class="mobile-nav-item" data-target="playoff-section">
+      <i class="fa-solid fa-trophy"></i>
+      <span>Playoffs</span>
+    </button>
+    <button class="mobile-nav-item highlight-mobile-btn" id="mobileHypeBtn">
+      <i class="fa-solid fa-bolt"></i>
+      <span>Card</span>
+    </button>
+  </nav>
 
   <footer class="footer">
     <div class="footer-content">
