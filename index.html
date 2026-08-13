@@ -123,11 +123,11 @@
       </div>
     </section>
 
-    <!-- AI Simulation Tuning Deck (Custom Sliders) -->
+    <!-- AI Simulation Tuning Deck (Custom Sliders & Natty Presets) -->
     <section class="tuning-section">
       <div class="section-header">
         <div class="title-with-badge">
-          <h2><i class="fa-solid fa-sliders"></i> SIMULATION ENGINE TUNING DECK</h2>
+          <h2><i class="fa-solid fa-sliders"></i> SIMULATION ENGINE & WIN CONDITIONS</h2>
           <span class="badge-tag">INTERACTIVE WEIGHTS</span>
         </div>
         <button id="resetSlidersBtn" class="reset-btn">
@@ -135,20 +135,62 @@
         </button>
       </div>
 
-      <p class="tuning-helper">Adjust real-time variables to see how player performance, home noise, and turnovers alter win probabilities and predicted scores.</p>
+      <!-- Quick Scenario Presets -->
+      <div class="presets-row">
+        <span class="presets-label"><i class="fa-solid fa-wand-magic-sparkles text-orange"></i> SCENARIO PRESETS:</span>
+        <div class="preset-buttons">
+          <button class="preset-btn active" data-preset="baseline">🎯 Realistic 11-1 (SEC Contender)</button>
+          <button class="preset-btn" data-preset="undefeated">🏆 12-0 Undefeated (Natty Recipe)</button>
+          <button class="preset-btn" data-preset="godmode">⚡ 15-0 Dynasty (God Mode)</button>
+          <button class="preset-btn" data-preset="chaos">🚨 Upset Chaos (8-4)</button>
+        </div>
+      </div>
+
+      <!-- Natty Formula Requirement Blueprint Box -->
+      <div class="formula-blueprint-box">
+        <div class="formula-header">
+          <div class="formula-title">
+            <i class="fa-solid fa-trophy text-gold"></i>
+            <span>CHAMPIONSHIP WIN FORMULA BLUEPRINT</span>
+          </div>
+          <span class="formula-status-pill" id="formulaStatusPill">FORMULA MET: 11-1 CFP BOUND</span>
+        </div>
+        <div class="formula-requirements-grid">
+          <div class="req-item">
+            <span class="req-title">Arch Manning Form</span>
+            <strong id="reqArchVal" class="text-white">Required: ≥ 100%</strong>
+            <span class="req-sub" id="reqArchSub">Currently: 100% (On Track)</span>
+          </div>
+          <div class="req-item">
+            <span class="req-title">Defensive Havoc</span>
+            <strong id="reqDefVal" class="text-white">Required: ≥ 100%</strong>
+            <span class="req-sub" id="reqDefSub">Currently: 100% (Lockdown)</span>
+          </div>
+          <div class="req-item">
+            <span class="req-title">Turnover Luck</span>
+            <strong id="reqLuckVal" class="text-white">Required: ≥ +1 for 12-0</strong>
+            <span class="req-sub" id="reqLuckSub">Currently: 0 (LSU Drop)</span>
+          </div>
+          <div class="req-item">
+            <span class="req-title">Natty Destiny</span>
+            <strong id="reqNattyVal" class="text-orange">CFP Bye + Atlanta Berth</strong>
+            <span class="req-sub" id="reqNattySub">Win Georgia/Ohio State</span>
+          </div>
+        </div>
+      </div>
 
       <div class="sliders-grid">
         <!-- Slider 1 -->
         <div class="slider-box">
           <div class="slider-info">
             <span class="slider-title"><i class="fa-solid fa-football"></i> Arch Manning / QB Form</span>
-            <span class="slider-value" id="qbValDisplay">100% (Heisman Mode)</span>
+            <span class="slider-value" id="qbValDisplay">100% (Heisman Form)</span>
           </div>
           <input type="range" id="qbRatingSlider" min="30" max="160" value="100" class="custom-slider">
           <div class="slider-labels">
             <span>Sucks / Benched (30%)</span>
             <span>Baseline (100%)</span>
-            <span>God Tier Heisman (160%)</span>
+            <span>God Tier (160%)</span>
           </div>
         </div>
 
@@ -169,14 +211,14 @@
         <!-- Slider 3 -->
         <div class="slider-box">
           <div class="slider-info">
-            <span class="slider-title"><i class="fa-solid fa-dice"></i> Turnover / Luck Factor</span>
+            <span class="slider-title"><i class="fa-solid fa-dice"></i> Turnover & Luck Meter</span>
             <span class="slider-value" id="turnoverValDisplay">Neutral (0)</span>
           </div>
           <input type="range" id="turnoverSlider" min="-5" max="5" value="0" class="custom-slider">
           <div class="slider-labels">
-            <span>-5 Fumble City</span>
+            <span>-5 Nightmare Luck</span>
             <span>Neutral (0)</span>
-            <span>+5 Takeaway Frenzy</span>
+            <span>+5 Ball Bounces Our Way</span>
           </div>
         </div>
 
@@ -200,7 +242,7 @@
     <section class="schedule-section">
       <div class="section-header">
         <div class="title-with-badge">
-          <h2><i class="fa-solid fa-calendar-days"></i> FALL 2026 SCHEDULE & PREDICTIONS</h2>
+          <h2><i class="fa-solid fa-calendar-days"></i> FALL 2026 REGULAR SEASON SCHEDULE</h2>
           <span class="badge-tag" id="gameCountBadge">12 GAMES</span>
         </div>
 
@@ -220,15 +262,19 @@
       </div>
     </section>
 
-    <!-- Interactive CFP Playoff Scenario & SEC Standings Calculator -->
+    <!-- Interactive CFP Playoff Scenario & Full Tournament Simulator -->
     <section class="playoff-section">
       <div class="section-header">
         <div class="title-with-badge">
-          <h2><i class="fa-solid fa-diagram-project"></i> 12-TEAM COLLEGE FOOTBALL PLAYOFF PATH</h2>
-          <span class="badge-tag">DYNAMIC BRACKET</span>
+          <h2><i class="fa-solid fa-trophy text-gold"></i> 12-TEAM CFP PLAYOFF & NATIONAL CHAMPIONSHIP JOURNEY</h2>
+          <span class="badge-tag">INTERACTIVE TOURNAMENT</span>
         </div>
-        <p class="playoff-note">Move the sliders above or toggle W/L checkmarks to see how Arch Manning's play reshapes Texas' Playoff Seeding.</p>
+        <button id="simulatePlayoffsBtn" class="action-btn hype-btn">
+          <i class="fa-solid fa-play"></i> SIMULATE PLAYOFF RUN
+        </button>
       </div>
+
+      <p class="playoff-note">Follow Texas' projected 3-round playoff gauntlet to the National Championship in Atlanta. Adjust the tuning deck above to see how playoff matchups shift!</p>
 
       <div class="playoff-dashboard">
         <div class="playoff-status-banner" id="playoffStatusBanner">
@@ -236,50 +282,90 @@
             <i class="fa-solid fa-award"></i>
             <div>
               <h3 id="playoffTitle">PROJECTED SEED: #2 (SEC CHAMPION - FIRST ROUND BYE)</h3>
-              <p id="playoffDesc">Texas earns a bye to the Sugar Bowl / Peach Bowl quarterfinals with an 11-1 regular season.</p>
+              <p id="playoffDesc">11-1 regular season (LSU road battle drop). Texas secures a First-Round Bye straight to the Sugar Bowl Quarterfinals!</p>
             </div>
           </div>
           <div class="path-stat-box">
             <span class="stat-num" id="playoffProbDisplay">96.4%</span>
-            <span class="stat-lbl">CFP BID CHANCE</span>
+            <span class="stat-lbl">CFP NATTY CHANCE</span>
           </div>
         </div>
 
-        <!-- Visual Bracket Preview -->
-        <div class="bracket-preview">
-          <div class="bracket-round">
-            <span class="round-title">ROUND 1 (ON CAMPUS)</span>
-            <div class="bracket-matchup">#12 Boise St @ #5 Ohio State</div>
-            <div class="bracket-matchup">#11 Notre Dame @ #6 Oregon</div>
-            <div class="bracket-matchup">#10 Penn State @ #7 Alabama</div>
-            <div class="bracket-matchup">#9 Ole Miss @ #8 Texas A&M</div>
-          </div>
-
-          <div class="bracket-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-
-          <div class="bracket-round">
-            <span class="round-title">QUARTERFINALS (NEW YEAR'S SIX)</span>
-            <div class="bracket-matchup highlight-ut">
-              <span class="seed">#2 SEED</span>
-              <strong>TEXAS LONGHORNS 🤘</strong>
-              <span class="vs">vs Winner 7/10</span>
+        <!-- Live Interactive Playoff Rounds Grid -->
+        <div class="playoff-stages-grid">
+          <!-- Stage 1: Quarterfinal -->
+          <div class="playoff-stage-card" id="stageQuarter">
+            <div class="stage-header">
+              <span class="stage-tag">QUARTERFINAL • SUGAR BOWL</span>
+              <span class="stage-status" id="qtrStatusBadge">SIMULATED WIN</span>
             </div>
-            <div class="bracket-matchup">#1 Georgia vs Winner 8/9</div>
-            <div class="bracket-matchup">#3 Ohio State vs Winner 6/11</div>
-            <div class="bracket-matchup">#4 Clemson vs Winner 5/12</div>
+            <div class="stage-matchup">
+              <div class="stage-team ut">
+                <span class="team-badge">🤘</span>
+                <strong>#2 TEXAS</strong>
+                <span class="stage-score" id="qtrUtScore">34</span>
+              </div>
+              <div class="stage-vs">VS</div>
+              <div class="stage-team opp">
+                <span class="team-badge bama">BAMA</span>
+                <strong id="qtrOppName">#7 ALABAMA</strong>
+                <span class="stage-score" id="qtrOppScore">24</span>
+              </div>
+            </div>
+            <div class="stage-intel" id="qtrIntel">
+              Arch Manning: 310 Pass Yds, 3 TDs. Defense sacks QB 4 times.
+            </div>
           </div>
 
-          <div class="bracket-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+          <!-- Stage 2: Semifinal -->
+          <div class="playoff-stage-card" id="stageSemi">
+            <div class="stage-header">
+              <span class="stage-tag">SEMIFINAL • ROSE BOWL</span>
+              <span class="stage-status" id="semiStatusBadge">SIMULATED WIN</span>
+            </div>
+            <div class="stage-matchup">
+              <div class="stage-team ut">
+                <span class="team-badge">🤘</span>
+                <strong>#2 TEXAS</strong>
+                <span class="stage-score" id="semiUtScore">28</span>
+              </div>
+              <div class="stage-vs">VS</div>
+              <div class="stage-team opp">
+                <span class="team-badge osu">O</span>
+                <strong id="semiOppName">#3 OHIO STATE</strong>
+                <span class="stage-score" id="semiOppScore">27</span>
+              </div>
+            </div>
+            <div class="stage-intel" id="semiIntel">
+              Rematch from Week 2! Texas defense stops 2-point conversion with 0:42 left!
+            </div>
+          </div>
 
-          <div class="bracket-round">
-            <span class="round-title">NATIONAL CHAMPIONSHIP</span>
-            <div class="bracket-matchup natty-card">
-              <i class="fa-solid fa-trophy text-orange"></i>
-              <span>MERCEDES-BENZ STADIUM, ATLANTA</span>
-              <strong class="text-white">PROJECTED: TEXAS vs OHIO STATE / GEORGIA</strong>
+          <!-- Stage 3: National Championship -->
+          <div class="playoff-stage-card natty-gold-card" id="stageNatty">
+            <div class="stage-header">
+              <span class="stage-tag"><i class="fa-solid fa-trophy text-gold"></i> CFP NATIONAL CHAMPIONSHIP • ATLANTA</span>
+              <span class="stage-status natty-win" id="nattyStatusBadge">🏆 NATIONAL CHAMPIONS</span>
+            </div>
+            <div class="stage-matchup">
+              <div class="stage-team ut">
+                <span class="team-badge">🤘</span>
+                <strong>#2 TEXAS</strong>
+                <span class="stage-score text-gold" id="nattyUtScore">38</span>
+              </div>
+              <div class="stage-vs">VS</div>
+              <div class="stage-team opp">
+                <span class="team-badge uga">G</span>
+                <strong id="nattyOppName">#1 GEORGIA</strong>
+                <span class="stage-score" id="nattyOppScore">31</span>
+              </div>
+            </div>
+            <div class="stage-intel" id="nattyIntel">
+              Manning to Golden 52-yd TD in 4th quarter. Texas wins first National Title since 2005! Hook 'Em! 🤘
             </div>
           </div>
         </div>
+
       </div>
     </section>
 

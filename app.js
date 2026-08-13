@@ -266,19 +266,19 @@ const SCHEDULE_DATA = [
     stadium: 'Tiger Stadium (Death Valley)',
     location: 'Baton Rouge, LA',
     rivalryName: '🐯 Death Valley Saturday Night War',
-    vegasSpread: -1.5,
-    overUnder: 59.5,
-    baseWinProb: 54.8,
-    projScoreUt: 31,
-    projScoreOpp: 28,
+    vegasSpread: +1.5,
+    overUnder: 58.5,
+    baseWinProb: 47.8,
+    projScoreUt: 28,
+    projScoreOpp: 31,
     radarStats: {
       ut: [95, 93, 89, 93, 91, 89],
-      opp: [93, 92, 90, 91, 89, 90]
+      opp: [94, 93, 90, 92, 90, 91]
     },
     scoutReport: {
-      xFactor: '102,321 fans under the lights in Baton Rouge. Surviving early momentum surges.',
-      keyMatchup: 'Texas edge pressure forcing LSU QB out of pocket.',
-      summary: 'Saturday night in Death Valley. One of the toughest road tests in all of college football.'
+      xFactor: 'Hostile 102k Death Valley noise. Baseline loss that flips to a win with +1 Luck or +10% Arch.',
+      keyMatchup: 'Texas offensive line handling LSU edge blitzes in the 4th quarter.',
+      summary: 'Saturday night in Death Valley! A brutal road test where turnover luck decides the final drive.'
     }
   },
   {
@@ -703,7 +703,7 @@ function renderSchedule() {
   });
 }
 
-// Update Top Record Ticker & CFP Playoff Bracket
+// Update Top Record Ticker, CFP Playoff Stages & Championship Formula Blueprint
 function updateTopMetricsAndPlayoff() {
   let wins = 0;
   let losses = 0;
@@ -722,48 +722,130 @@ function updateTopMetricsAndPlayoff() {
   const playoffDesc = document.getElementById('playoffDesc');
   const playoffProbDisplay = document.getElementById('playoffProbDisplay');
 
+  // Formula Blueprint Elements
+  const statusPill = document.getElementById('formulaStatusPill');
+  const reqArchSub = document.getElementById('reqArchSub');
+  const reqDefSub = document.getElementById('reqDefSub');
+  const reqLuckSub = document.getElementById('reqLuckSub');
+  const reqNattySub = document.getElementById('reqNattySub');
+
+  // Playoff Stage Cards Elements
+  const qtrUt = document.getElementById('qtrUtScore');
+  const qtrOpp = document.getElementById('qtrOppScore');
+  const qtrStatus = document.getElementById('qtrStatusBadge');
+  const qtrIntel = document.getElementById('qtrIntel');
+
+  const semiUt = document.getElementById('semiUtScore');
+  const semiOpp = document.getElementById('semiOppScore');
+  const semiStatus = document.getElementById('semiStatusBadge');
+  const semiIntel = document.getElementById('semiIntel');
+
+  const nattyUt = document.getElementById('nattyUtScore');
+  const nattyOpp = document.getElementById('nattyOppScore');
+  const nattyStatus = document.getElementById('nattyStatusBadge');
+  const nattyIntel = document.getElementById('nattyIntel');
+
+  // Blueprint real-time feedback
+  const qb = state.sliders.qbRating;
+  const def = state.sliders.defense;
+  const to = state.sliders.turnover;
+
+  if (reqArchSub) reqArchSub.innerText = `Currently: ${qb}% (${qb >= 115 ? 'Elite' : qb >= 100 ? 'On Track' : 'Danger'})`;
+  if (reqDefSub) reqDefSub.innerText = `Currently: ${def}% (${def >= 115 ? 'Iron Wall' : def >= 100 ? 'Lockdown' : 'Vulnerable'})`;
+  if (reqLuckSub) reqLuckSub.innerText = `Currently: ${to > 0 ? `+${to} Takeaways` : to < 0 ? `${to} Bad Breaks` : '0 Neutral'}`;
+
+  // Performance Scenarios
   if (wins === 12) {
     nattyOddsElem.innerText = '+220';
     secProbElem.innerText = '64.5%';
     playoffTitle.innerText = 'PROJECTED SEED: #1 (UNDISPUTED SEC CHAMPION - FIRST ROUND BYE)';
-    playoffDesc.innerText = '12-0 Perfect Season! Arch Manning leads Texas to the #1 overall seed in Atlanta and CFP Natty favorite status.';
+    playoffDesc.innerText = '12-0 Perfect Season! Arch Manning and defense sweep the SEC gauntlet. #1 overall seed in Atlanta.';
     playoffProbDisplay.innerText = '99.9%';
+
+    if (statusPill) {
+      statusPill.innerText = '🏆 12-0 NATTY FAVORITE RECIPE MET';
+      statusPill.style.background = 'rgba(255, 184, 0, 0.2)';
+      statusPill.style.borderColor = '#FFB800';
+      statusPill.style.color = '#FFB800';
+    }
+
+    // Playoff Run: Dominant
+    if (qtrUt) { qtrUt.innerText = '38'; qtrOpp.innerText = '21'; qtrStatus.innerText = 'SIMULATED WIN'; qtrIntel.innerText = 'Manning throws 3 TDs. Defense holds Alabama to 2.8 YPC on ground.'; }
+    if (semiUt) { semiUt.innerText = '34'; semiOpp.innerText = '24'; semiStatus.innerText = 'SIMULATED WIN'; semiIntel.innerText = 'Rematch with Ohio State! Texas pulls away with 4th quarter pick-six.'; }
+    if (nattyUt) { nattyUt.innerText = '41'; nattyOpp.innerText = '31'; nattyStatus.innerText = '🏆 NATIONAL CHAMPIONS'; nattyIntel.innerText = 'Texas raises the National Championship trophy in Atlanta! 15-0 Immortality! 🤘'; }
+
   } else if (wins === 11) {
     nattyOddsElem.innerText = '+420';
     secProbElem.innerText = '38.4%';
     playoffTitle.innerText = 'PROJECTED SEED: #2 (SEC CHAMPION - FIRST ROUND BYE)';
-    playoffDesc.innerText = 'Texas earns a bye to the Sugar Bowl / Peach Bowl quarterfinals with an 11-1 regular season.';
+    playoffDesc.innerText = '11-1 regular season (lone drop at LSU in Death Valley). Texas earns a First-Round Bye straight to the Sugar Bowl!';
     playoffProbDisplay.innerText = '96.4%';
+
+    if (statusPill) {
+      statusPill.innerText = '🎯 11-1 REALISTIC BASELINE (LSU ROAD DROP)';
+      statusPill.style.background = 'rgba(16, 185, 129, 0.15)';
+      statusPill.style.borderColor = '#10B981';
+      statusPill.style.color = '#10B981';
+    }
+
+    // Playoff Run: Classic
+    if (qtrUt) { qtrUt.innerText = '34'; qtrOpp.innerText = '24'; qtrStatus.innerText = 'SIMULATED WIN'; qtrIntel.innerText = 'Arch Manning 310 Pass Yds. Texas pulls away in 4th quarter Sugar Bowl clash.'; }
+    if (semiUt) { semiUt.innerText = '28'; semiOpp.innerText = '27'; semiStatus.innerText = 'SIMULATED WIN'; semiIntel.innerText = 'Rose Bowl thriller vs Ohio State! Stopped 2-point conversion with 0:42 left!'; }
+    if (nattyUt) { nattyUt.innerText = '38'; nattyOpp.innerText = '31'; nattyStatus.innerText = '🏆 NATIONAL CHAMPIONS'; nattyIntel.innerText = 'Manning to Golden 52-yd TD in 4th quarter. Texas wins National Title in Atlanta!'; }
+
   } else if (wins === 10) {
     nattyOddsElem.innerText = '+750';
     secProbElem.innerText = '18.5%';
     playoffTitle.innerText = 'PROJECTED SEED: #5 (AT-LARGE CFP FIRST ROUND HOST AT DKR)';
-    playoffDesc.innerText = '10-2 season earns Texas a massive on-campus College Football Playoff home game in Austin!';
+    playoffDesc.innerText = '10-2 regular season earns Texas a historic on-campus College Football Playoff first-round home game in Austin!';
     playoffProbDisplay.innerText = '87.1%';
+
+    if (statusPill) {
+      statusPill.innerText = '⚠️ 10-2 AT-LARGE (NEEDS +1 LUCK FOR BYE)';
+      statusPill.style.background = 'rgba(255, 122, 24, 0.2)';
+      statusPill.style.borderColor = '#FF7A18';
+      statusPill.style.color = '#FF7A18';
+    }
+
+    if (qtrUt) { qtrUt.innerText = '31'; qtrOpp.innerText = '27'; qtrStatus.innerText = 'SIMULATED WIN'; qtrIntel.innerText = 'Quarterfinal dogfight. Texas converts 4th down to run out the clock.'; }
+    if (semiUt) { semiUt.innerText = '24'; semiOpp.innerText = '28'; semiStatus.innerText = 'ELIMINATED IN SEMIS'; semiIntel.innerText = 'Fought to the wire against Georgia front seven in the Rose Bowl.'; }
+    if (nattyUt) { nattyUt.innerText = '--'; nattyOpp.innerText = '--'; nattyStatus.innerText = 'MISSED FINAL'; nattyIntel.innerText = 'Eliminated in semifinal round after 10-2 regular season campaign.'; }
+
   } else if (wins === 9) {
     nattyOddsElem.innerText = '+1800';
     secProbElem.innerText = '6.2%';
     playoffTitle.innerText = 'PROJECTED SEED: #10 (AT-LARGE ROAD CFP GAME)';
     playoffDesc.innerText = '9-3 in the brutal SEC schedule squeaks into the 12-team field on the road.';
     playoffProbDisplay.innerText = '62.4%';
-  } else if (wins === 8) {
-    nattyOddsElem.innerText = '+6500';
-    secProbElem.innerText = '1.5%';
-    playoffTitle.innerText = 'CFP BUBBLE: OUTSIDE THE 12-TEAM CUTLINE (RELIAQUEST BOWL)';
-    playoffDesc.innerText = '8-4 record leaves Texas just outside the CFP field. Headed to Tampa for the ReliaQuest / Citrus Bowl.';
-    playoffProbDisplay.innerText = '28.0%';
-  } else if (wins === 7) {
-    nattyOddsElem.innerText = '+25000';
-    secProbElem.innerText = '0.1%';
-    playoffTitle.innerText = 'CFP STATUS: ELIMINATED (TEXAS BOWL / LAS VEGAS BOWL)';
-    playoffDesc.innerText = '7-5 disappointing campaign. Arch Manning & offense struggled in SEC road gauntlet.';
-    playoffProbDisplay.innerText = '4.5%';
+
+    if (statusPill) {
+      statusPill.innerText = '🚨 9-3 ROAD SEED (LACKS CHAMPIONSHIP METRICS)';
+      statusPill.style.background = 'rgba(239, 68, 68, 0.2)';
+      statusPill.style.borderColor = '#EF4444';
+      statusPill.style.color = '#EF4444';
+    }
+
+    if (qtrUt) { qtrUt.innerText = '20'; qtrOpp.innerText = '27'; qtrStatus.innerText = 'ELIMINATED'; qtrIntel.innerText = 'Road playoff matchup at hostile stadium proves too much.'; }
+    if (semiUt) { semiUt.innerText = '--'; semiOpp.innerText = '--'; semiStatus.innerText = '--'; semiIntel.innerText = 'Did not advance to semifinals.'; }
+    if (nattyUt) { nattyUt.innerText = '--'; nattyOpp.innerText = '--'; nattyStatus.innerText = '--'; nattyIntel.innerText = 'Did not reach Atlanta.'; }
+
   } else {
     nattyOddsElem.innerText = 'OFF BOARD';
     secProbElem.innerText = '0.0%';
-    playoffTitle.innerText = 'CFP STATUS: DISASTER SEASON (ARCH MANNING BENCHED / NO BOWL)';
+    playoffTitle.innerText = 'CFP STATUS: DISASTER SEASON (ARCH MANNING BENCHED / MISSING BOWL)';
     playoffDesc.innerText = `${wins}-${losses} record. Total meltdown in Austin. Offensive and defensive efficiency collapsed.`;
     playoffProbDisplay.innerText = '0.0%';
+
+    if (statusPill) {
+      statusPill.innerText = '🚨 FAILED: DIAL UP ARCH MANNING & LUCK';
+      statusPill.style.background = 'rgba(239, 68, 68, 0.25)';
+      statusPill.style.borderColor = '#EF4444';
+      statusPill.style.color = '#EF4444';
+    }
+
+    if (qtrUt) { qtrUt.innerText = '--'; qtrOpp.innerText = '--'; qtrStatus.innerText = 'NO CFP BID'; qtrIntel.innerText = 'Missed 12-team playoff field entirely.'; }
+    if (semiUt) { semiUt.innerText = '--'; semiOpp.innerText = '--'; semiStatus.innerText = '--'; semiIntel.innerText = '--'; }
+    if (nattyUt) { nattyUt.innerText = '--'; nattyOpp.innerText = '--'; nattyStatus.innerText = '--'; nattyIntel.innerText = '--'; }
   }
 }
 
@@ -1175,6 +1257,60 @@ document.addEventListener('DOMContentLoaded', () => {
 
       document.getElementById('crowdValDisplay').innerText = label;
       updatePicksFromTuning();
+    });
+  }
+
+  // Scenario Preset Buttons Handler
+  document.querySelectorAll('.preset-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      playSound('click');
+      document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const preset = btn.getAttribute('data-preset');
+      if (preset === 'baseline') {
+        state.sliders = { qbRating: 100, defense: 100, turnover: 0, crowd: 100 };
+        showToast('🎯 Baseline loaded: 11-1 SEC Contender (Drop LSU)');
+      } else if (preset === 'undefeated') {
+        state.sliders = { qbRating: 115, defense: 105, turnover: 1, crowd: 100 };
+        showToast('🏆 Undefeated Recipe loaded: 12-0 Natty Favorite (+1 Luck)');
+      } else if (preset === 'godmode') {
+        state.sliders = { qbRating: 150, defense: 130, turnover: 3, crowd: 120 };
+        showToast('⚡ God Mode loaded: 15-0 Undisputed Champions');
+      } else if (preset === 'chaos') {
+        state.sliders = { qbRating: 60, defense: 65, turnover: -2, crowd: 85 };
+        showToast('🚨 Upset Chaos loaded: 8-4 Season Meltdown');
+      }
+
+      if (qbSlider) qbSlider.value = state.sliders.qbRating;
+      if (defSlider) defSlider.value = state.sliders.defense;
+      if (toSlider) toSlider.value = state.sliders.turnover;
+      if (crowdSlider) crowdSlider.value = state.sliders.crowd;
+
+      // Update text displays
+      const qVal = state.sliders.qbRating;
+      document.getElementById('qbValDisplay').innerText = qVal >= 140 ? `${qVal}% (🔥 Heisman Winner / God Tier)` : qVal >= 115 ? `${qVal}% (Elite All-American)` : qVal >= 90 ? `${qVal}% (Heisman Form)` : `${qVal}% (⚠️ Struggling)`;
+      
+      const dVal = state.sliders.defense;
+      document.getElementById('defValDisplay').innerText = dVal >= 140 ? `${dVal}% (🛡️ Steel Curtain)` : dVal >= 105 ? `${dVal}% (Top 5 Defense)` : dVal >= 90 ? `${dVal}% (Dominant)` : `${dVal}% (⚠️ Vulnerable)`;
+
+      const tVal = state.sliders.turnover;
+      document.getElementById('turnoverValDisplay').innerText = tVal > 0 ? `+${tVal} (⚡ Takeaways)` : tVal < 0 ? `${tVal} (🚨 Bad Breaks)` : 'Neutral (0)';
+
+      const cVal = state.sliders.crowd;
+      document.getElementById('crowdValDisplay').innerText = cVal > 110 ? `Deafening 130dB (${cVal}%)` : `DKR 105k+ Roar (${cVal}%)`;
+
+      updatePicksFromTuning();
+    });
+  });
+
+  // Simulate Playoff Run Button Handler
+  const simPlayoffBtn = document.getElementById('simulatePlayoffsBtn');
+  if (simPlayoffBtn) {
+    simPlayoffBtn.addEventListener('click', () => {
+      playSound('horn');
+      showToast('🏈 Simulating 3-Round CFP Playoff Tournament...');
+      updateTopMetricsAndPlayoff();
     });
   }
 
