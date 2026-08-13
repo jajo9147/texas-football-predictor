@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Texas Longhorns Football Season Oracle | AI Game Simulator & CFP Calculator</title>
+  
+  <!-- OpenGraph Meta Tags for Rich Group Chat Previews -->
+  <meta property="og:title" content="Texas Longhorns Football Season Predictor & AI Game Simulator">
+  <meta property="og:description" content="Simulate every Texas Longhorns game drive-by-drive, calculate CFP playoff paths, and analyze matchup stats. Hook 'Em!">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1587280501635-68a0e82cd5ff?w=1200&auto=format&fit=crop&q=80">
+  <meta name="theme-color" content="#BF5700">
+
+  <!-- Google Fonts: Bebas Neue, Outfit, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;600;800&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons for Broadcast Glyphs -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dark-theme">
+
+  <!-- Ambient Stadium Glow Effects -->
+  <div class="ambient-glow glow-orange"></div>
+  <div class="ambient-glow glow-blue"></div>
+  <div class="grid-overlay"></div>
+
+  <!-- Header & Navigation -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="brand">
+        <div class="logo-badge">
+          <span class="horns-icon">🤘</span>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">TEXAS ORACLE</span>
+          <span class="brand-subtitle">AI SEASON SIMULATOR & PREDICTOR</span>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <div class="live-pulse">
+          <span class="pulse-dot"></span>
+          <span class="pulse-text">2026-27 AI ENGINE LIVE</span>
+        </div>
+        <button id="soundToggleBtn" class="action-btn sound-btn" title="Toggle Stadium Audio Effects">
+          <i class="fa-solid fa-volume-high"></i>
+          <span>AUDIO FX</span>
+        </button>
+        <button id="openHypeCardBtn" class="action-btn hype-btn">
+          <i class="fa-solid fa-bolt"></i>
+          <span>GENERATE HYPE CARD</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Dashboard Container -->
+  <main class="main-content">
+
+    <!-- Hero Section / Hype Marquee -->
+    <section class="hero-section">
+      <div class="hero-badge">
+        <i class="fa-solid fa-trophy"></i>
+        <span>ROAD TO THE COLLEGE FOOTBALL PLAYOFF NATIONAL CHAMPIONSHIP</span>
+      </div>
+      
+      <h1 class="hero-title">
+        TEXAS LONGHORNS <span class="gradient-text">SEASON PREDICTOR</span>
+      </h1>
+      
+      <p class="hero-description">
+        Powered by Monte Carlo game drive simulations, SP+ efficiency metrics, and roster analytics. 
+        Simulate any matchup, test upset scenarios, and generate shareable Game Day prediction cards for the boys.
+      </p>
+
+      <!-- Key Metrics Broadcast Ticker -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-icon"><i class="fa-solid fa-calculator"></i></div>
+          <div class="metric-data">
+            <span class="metric-label">PROJECTED RECORD</span>
+            <span class="metric-value" id="projRecordVal">11 - 1</span>
+            <span class="metric-sub text-success"><i class="fa-solid fa-arrow-trend-up"></i> 91.8% Regular Season Dominance</span>
+          </div>
+        </div>
+
+        <div class="metric-card highlight-orange">
+          <div class="metric-icon"><i class="fa-solid fa-trophy"></i></div>
+          <div class="metric-data">
+            <span class="metric-label">CFP NATTY ODDS</span>
+            <span class="metric-value" id="nattyOddsVal">+420</span>
+            <span class="metric-sub text-orange">#2 Favorite Nationally</span>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon"><i class="fa-solid fa-shield-halved"></i></div>
+          <div class="metric-data">
+            <span class="metric-label">SEC CHAMPIONSHIP PROB</span>
+            <span class="metric-value" id="secProbVal">38.4%</span>
+            <span class="metric-sub text-cyan">Atlanta Bound Contender</span>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon"><i class="fa-solid fa-chart-simple"></i></div>
+          <div class="metric-data">
+            <span class="metric-label">STRENGTH OF SCHEDULE</span>
+            <span class="metric-value">#4</span>
+            <span class="metric-sub text-muted">SEC Powerhouse Gauntlet</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AI Simulation Tuning Deck (Custom Sliders) -->
+    <section class="tuning-section">
+      <div class="section-header">
+        <div class="title-with-badge">
+          <h2><i class="fa-solid fa-sliders"></i> SIMULATION ENGINE TUNING DECK</h2>
+          <span class="badge-tag">INTERACTIVE WEIGHTS</span>
+        </div>
+        <button id="resetSlidersBtn" class="reset-btn">
+          <i class="fa-solid fa-rotate-left"></i> Reset Defaults
+        </button>
+      </div>
+
+      <p class="tuning-helper">Adjust real-time variables to see how player performance, home noise, and turnovers alter win probabilities and predicted scores.</p>
+
+      <div class="sliders-grid">
+        <!-- Slider 1 -->
+        <div class="slider-box">
+          <div class="slider-info">
+            <span class="slider-title"><i class="fa-solid fa-football"></i> Arch Manning / QB Form</span>
+            <span class="slider-value" id="qbValDisplay">100% (Heisman Mode)</span>
+          </div>
+          <input type="range" id="qbRatingSlider" min="70" max="130" value="100" class="custom-slider">
+          <div class="slider-labels">
+            <span>Struggling (70%)</span>
+            <span>Baseline</span>
+            <span>God Tier (130%)</span>
+          </div>
+        </div>
+
+        <!-- Slider 2 -->
+        <div class="slider-box">
+          <div class="slider-info">
+            <span class="slider-title"><i class="fa-solid fa-shield-cat"></i> Texas Defense & Pass Rush</span>
+            <span class="slider-value" id="defValDisplay">100% (Dominant)</span>
+          </div>
+          <input type="range" id="defenseSlider" min="70" max="130" value="100" class="custom-slider">
+          <div class="slider-labels">
+            <span>Vulnerable</span>
+            <span>Lockdown</span>
+            <span>Iron Wall</span>
+          </div>
+        </div>
+
+        <!-- Slider 3 -->
+        <div class="slider-box">
+          <div class="slider-info">
+            <span class="slider-title"><i class="fa-solid fa-dice"></i> Turnover / Luck Factor</span>
+            <span class="slider-value" id="turnoverValDisplay">Neutral (0)</span>
+          </div>
+          <input type="range" id="turnoverSlider" min="-3" max="3" value="0" class="custom-slider">
+          <div class="slider-labels">
+            <span>-3 Bad Breaks</span>
+            <span>Neutral</span>
+            <span>+3 Takeaway Frenzy</span>
+          </div>
+        </div>
+
+        <!-- Slider 4 -->
+        <div class="slider-box">
+          <div class="slider-info">
+            <span class="slider-title"><i class="fa-solid fa-bullhorn"></i> Crowd Noise & Hostility</span>
+            <span class="slider-value" id="crowdValDisplay">DKR 105k+ Roar</span>
+          </div>
+          <input type="range" id="crowdSlider" min="80" max="120" value="100" class="custom-slider">
+          <div class="slider-labels">
+            <span>Quiet Road</span>
+            <span>Standard</span>
+            <span>Deafening 125dB</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Schedule & Matchup Section -->
+    <section class="schedule-section">
+      <div class="section-header">
+        <div class="title-with-badge">
+          <h2><i class="fa-solid fa-calendar-days"></i> 2026-27 FULL SCHEDULE & GAME SIMULATOR</h2>
+          <span class="badge-tag" id="gameCountBadge">12 GAMES</span>
+        </div>
+
+        <!-- Schedule Filter Tabs -->
+        <div class="filter-tabs">
+          <button class="filter-tab active" data-filter="all">All Games</button>
+          <button class="filter-tab" data-filter="marquee">🔥 Marquee & Rivalries</button>
+          <button class="filter-tab" data-filter="sec">SEC Battles</button>
+          <button class="filter-tab" data-filter="home">DKR Home</button>
+          <button class="filter-tab" data-filter="away">Road / Neutral</button>
+        </div>
+      </div>
+
+      <!-- Schedule Cards Container -->
+      <div class="schedule-grid" id="scheduleGrid">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </section>
+
+    <!-- Interactive CFP Playoff Scenario & SEC Standings Calculator -->
+    <section class="playoff-section">
+      <div class="section-header">
+        <div class="title-with-badge">
+          <h2><i class="fa-solid fa-diagram-project"></i> 12-TEAM COLLEGE FOOTBALL PLAYOFF PATH</h2>
+          <span class="badge-tag">DYNAMIC BRACKET</span>
+        </div>
+        <p class="playoff-note">Toggle W/L checkmarks in the schedule above to see how upsets reshape Texas' Playoff Seed.</p>
+      </div>
+
+      <div class="playoff-dashboard">
+        <div class="playoff-status-banner" id="playoffStatusBanner">
+          <div class="status-indicator win-status">
+            <i class="fa-solid fa-award"></i>
+            <div>
+              <h3 id="playoffTitle">PROJECTED SEED: #2 (SEC CHAMPION - FIRST ROUND BYE)</h3>
+              <p id="playoffDesc">Texas earns a bye to the Sugar Bowl / Peach Bowl quarterfinals with an 11-1 regular season.</p>
+            </div>
+          </div>
+          <div class="path-stat-box">
+            <span class="stat-num" id="playoffProbDisplay">96.4%</span>
+            <span class="stat-lbl">CFP BID CHANCE</span>
+          </div>
+        </div>
+
+        <!-- Visual Bracket Preview -->
+        <div class="bracket-preview">
+          <div class="bracket-round">
+            <span class="round-title">ROUND 1 (ON CAMPUS)</span>
+            <div class="bracket-matchup">#12 Boise St @ #5 Ohio State</div>
+            <div class="bracket-matchup">#11 Notre Dame @ #6 Oregon</div>
+            <div class="bracket-matchup">#10 Penn State @ #7 Alabama</div>
+            <div class="bracket-matchup">#9 Ole Miss @ #8 Texas A&M</div>
+          </div>
+
+          <div class="bracket-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+
+          <div class="bracket-round">
+            <span class="round-title">QUARTERFINALS (NEW YEAR'S SIX)</span>
+            <div class="bracket-matchup highlight-ut">
+              <span class="seed">#2 SEED</span>
+              <strong>TEXAS LONGHORNS 🤘</strong>
+              <span class="vs">vs Winner 7/10</span>
+            </div>
+            <div class="bracket-matchup">#1 Georgia vs Winner 8/9</div>
+            <div class="bracket-matchup">#3 Ohio State vs Winner 6/11</div>
+            <div class="bracket-matchup">#4 Clemson vs Winner 5/12</div>
+          </div>
+
+          <div class="bracket-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+
+          <div class="bracket-round">
+            <span class="round-title">NATIONAL CHAMPIONSHIP</span>
+            <div class="bracket-matchup natty-card">
+              <i class="fa-solid fa-trophy text-orange"></i>
+              <span>MERCEDES-BENZ STADIUM, ATLANTA</span>
+              <strong class="text-white">PROJECTED: TEXAS vs GEORGIA</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Wizard Scouting & Rivalry Factoids Section -->
+    <section class="intel-section">
+      <div class="section-header">
+        <div class="title-with-badge">
+          <h2><i class="fa-solid fa-brain"></i> ORACLE DEEP SCOUTING INTEL</h2>
+          <span class="badge-tag">AI TACTICAL BREAKDOWNS</span>
+        </div>
+      </div>
+
+      <div class="intel-grid">
+        <div class="intel-card">
+          <div class="intel-icon"><i class="fa-solid fa-flag-checkered"></i></div>
+          <h3>The Red River Rivalry (vs Oklahoma)</h3>
+          <p>The Golden Hat game at the Cotton Bowl is projected with <strong>Texas winning 34-23</strong>. Texas holds a decisive advantage in offensive line pass-protection EPA (+0.24 vs -0.08) against OU's blitz packages.</p>
+        </div>
+
+        <div class="intel-card highlight-border">
+          <div class="intel-icon"><i class="fa-solid fa-fire"></i></div>
+          <h3>The Lone Star Showdown (at Texas A&M)</h3>
+          <p>College Station hostile environment rating: <strong>98/100</strong>. Model predicts an instant classic: <strong>Texas 31 - A&M 24</strong>. Key edge: Texas secondary limiting explosive vertical shots over 20+ yards.</p>
+        </div>
+
+        <div class="intel-card">
+          <div class="intel-icon"><i class="fa-solid fa-shield"></i></div>
+          <h3>The SEC Clash of Titans (vs Georgia)</h3>
+          <p>Projected as the Game of the Year. Projected score: <strong>Texas 28 - Georgia 27</strong> (52.8% win prob). Turnover differential (+1 in Texas favor) decides the 4th quarter 2-minute drill.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- GitHub Share & Host Banner -->
+    <section class="github-host-section">
+      <div class="host-content">
+        <div class="host-text">
+          <h2><i class="fa-brands fa-github"></i> SHARE WITH YOUR BUDDIES</h2>
+          <p>You can host this live on GitHub Pages with 1 click so anyone can open it on their phone!</p>
+        </div>
+        <div class="host-actions">
+          <button id="copyShareLinkBtn" class="action-btn copy-btn">
+            <i class="fa-solid fa-link"></i> Copy Shareable Link
+          </button>
+          <button id="viewDeployGuideBtn" class="action-btn guide-btn">
+            <i class="fa-solid fa-terminal"></i> 1-Click Hosting Guide
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Game Simulation Modal (Arena Visualizer) -->
+  <div class="modal-backdrop" id="simModal">
+    <div class="modal-dialog">
+      <button class="modal-close" id="closeSimModalBtn"><i class="fa-solid fa-xmark"></i></button>
+
+      <div class="modal-header">
+        <div class="matchup-tag" id="modalMatchupTag">WEEK 6 • RED RIVER RIVALRY</div>
+        <h2 class="modal-title" id="modalGameTitle">TEXAS LONGHORNS vs OKLAHOMA SOONERS</h2>
+        <div class="modal-stadium" id="modalStadiumInfo"><i class="fa-solid fa-location-dot"></i> Cotton Bowl • Dallas, TX</div>
+      </div>
+
+      <!-- Live Simulation Scoreboard & Arena -->
+      <div class="modal-scoreboard">
+        <div class="team-side home-side">
+          <div class="team-badge-large ut-badge">🤘</div>
+          <div class="team-name">TEXAS</div>
+          <div class="team-rank">#2 NATIONALLY</div>
+          <div class="team-score" id="simHomeScore">34</div>
+        </div>
+
+        <div class="scoreboard-center">
+          <div class="game-status-badge" id="simStatusBadge">FINAL (SIMULATED)</div>
+          <div class="spread-box" id="simSpreadDisplay">LINE: UT -8.5 | O/U 56.5</div>
+          <button id="runSimButton" class="run-sim-btn">
+            <i class="fa-solid fa-play"></i> RE-SIMULATE 10,000 DRIVES
+          </button>
+        </div>
+
+        <div class="team-side away-side">
+          <div class="team-badge-large opp-badge" id="simOppBadge">OU</div>
+          <div class="team-name" id="simOppName">OKLAHOMA</div>
+          <div class="team-rank" id="simOppRank">#14 NATIONALLY</div>
+          <div class="team-score" id="simAwayScore">23</div>
+        </div>
+      </div>
+
+      <!-- Win Probability Bar -->
+      <div class="win-prob-section">
+        <div class="prob-labels">
+          <span class="text-orange" id="simUtWinProbText">TEXAS WIN PROB: 74.2%</span>
+          <span class="text-muted" id="simOppWinProbText">OPPONENT: 25.8%</span>
+        </div>
+        <div class="prob-bar-track">
+          <div class="prob-bar-fill" id="simProbFill" style="width: 74.2%;"></div>
+        </div>
+      </div>
+
+      <!-- Modal Tabs: [Live Drive Log] [Radar Comparison] [X-Factors] -->
+      <div class="modal-sub-tabs">
+        <button class="sub-tab active" data-subtab="drives"><i class="fa-solid fa-list-ol"></i> Simulated Drive Log</button>
+        <button class="sub-tab" data-subtab="radar"><i class="fa-solid fa-chart-radar"></i> Matchup Radar Chart</button>
+        <button class="sub-tab" data-subtab="scout"><i class="fa-solid fa-chess-knight"></i> Tactical X-Factors</button>
+      </div>
+
+      <!-- Tab Content: Simulated Drives -->
+      <div class="tab-pane active" id="pane-drives">
+        <div class="drives-list" id="simDrivesContainer">
+          <!-- Populated dynamically by app.js -->
+        </div>
+      </div>
+
+      <!-- Tab Content: Radar Chart -->
+      <div class="tab-pane" id="pane-radar">
+        <div class="radar-wrapper">
+          <canvas id="radarChartCanvas" width="400" height="400"></canvas>
+          <div class="radar-legend">
+            <span class="legend-item ut-legend"><span class="legend-box orange"></span> Texas Longhorns</span>
+            <span class="legend-item opp-legend"><span class="legend-box white"></span> Opponent</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Content: Tactical X-Factors -->
+      <div class="tab-pane" id="pane-scout">
+        <div class="scout-content" id="simScoutDetails">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="action-btn card-export-btn" id="modalExportCardBtn">
+          <i class="fa-solid fa-camera"></i> Generate Group Chat Image
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Group Chat Hype Card Generator Modal -->
+  <div class="modal-backdrop" id="cardModal">
+    <div class="modal-dialog card-dialog">
+      <button class="modal-close" id="closeCardModalBtn"><i class="fa-solid fa-xmark"></i></button>
+
+      <div class="modal-header">
+        <h2 class="modal-title"><i class="fa-solid fa-bolt text-orange"></i> GROUP CHAT HYPE CARD CREATOR</h2>
+        <p class="modal-subtitle">Generate a pristine graphic to drop in your group chat to show the boys who is taking the Natty.</p>
+      </div>
+
+      <div class="card-creator-body">
+        <div class="card-controls">
+          <div class="form-group">
+            <label for="cardGameSelect">Select Matchup:</label>
+            <select id="cardGameSelect" class="custom-select"></select>
+          </div>
+
+          <div class="form-group">
+            <label for="cardUserHandle">Your Name / Handle:</label>
+            <input type="text" id="cardUserHandle" class="custom-input" value="Jake's Official Pick" placeholder="e.g. Jake The Wizard">
+          </div>
+
+          <div class="form-group">
+            <label for="cardCustomNote">Custom Trash Talk / Hot Take:</label>
+            <input type="text" id="cardCustomNote" class="custom-input" value="Arch Manning throwing 4 TDs. Not even close. Hook 'Em! 🤘" placeholder="Your hot take...">
+          </div>
+
+          <div class="button-row">
+            <button id="downloadCardBtn" class="action-btn hype-btn">
+              <i class="fa-solid fa-download"></i> Download High-Res Image
+            </button>
+            <button id="copyCardBtn" class="action-btn copy-btn">
+              <i class="fa-solid fa-copy"></i> Copy Image to Clipboard
+            </button>
+          </div>
+          <span class="copy-status-msg" id="cardCopyStatus"></span>
+        </div>
+
+        <!-- Canvas Card Render Preview -->
+        <div class="card-preview-container">
+          <canvas id="hypeCardCanvas" width="600" height="750"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1-Click Hosting Guide Modal -->
+  <div class="modal-backdrop" id="guideModal">
+    <div class="modal-dialog">
+      <button class="modal-close" id="closeGuideModalBtn"><i class="fa-solid fa-xmark"></i></button>
+
+      <div class="modal-header">
+        <h2 class="modal-title"><i class="fa-brands fa-github text-orange"></i> Deploy Live to GitHub Pages</h2>
+        <p class="modal-subtitle">Send your buddies a real live link like <code>https://yourname.github.io/texas-football-predictor/</code></p>
+      </div>
+
+      <div class="guide-steps">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-desc">
+            <h4>Push to your GitHub Account</h4>
+            <p>Run these 3 commands in your terminal (or let Antigravity do it for you):</p>
+            <pre><code>cd /Users/jakejohnson/texas-football-predictor
+git init && git add . && git commit -m "Texas Longhorns AI Season Predictor"
+gh repo create texas-football-predictor --public --source=. --push</code></pre>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-desc">
+            <h4>Enable GitHub Pages</h4>
+            <p>Go to your repository <strong>Settings &gt; Pages</strong> &gt; set Branch to <strong>main</strong> &gt; Save.</p>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-desc">
+            <h4>Send the URL to your friends</h4>
+            <p>Drop the link in your iMessage / GroupMe chat and watch them ask what black magic you just coded!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toastMessage">Link copied to clipboard!</div>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <span class="horns-logo">🤘</span>
+        <strong>TEXAS LONGHORNS FOOTBALL ORACLE</strong>
+      </div>
+      <p class="footer-text">Built with Antigravity • Burnt Orange & Obsidian Edition • Hook 'Em Horns</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
