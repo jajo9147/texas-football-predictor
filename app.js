@@ -463,20 +463,18 @@ function playSound(type) {
 
 // Calculate adjusted win probability and scores based on sliders
 function calculateAdjustedMatchup(game) {
-  const qbFactor = (state.sliders.qbRating - 100) * 0.65; // High responsiveness for Arch Manning form
-  const defFactor = (state.sliders.defense - 100) * 0.50; // High responsiveness for defense
-  const toFactor = state.sliders.turnover * 5.0;          // Turnovers
-  const crowdImpact = game.isHome ? (state.sliders.crowd - 100) * 0.35 : -(state.sliders.crowd - 100) * 0.35;
+  const qbFactor = (state.sliders.qbRating - 100) * 0.28; // Calibrated sensitivity for Arch Manning form
+  const defFactor = (state.sliders.defense - 100) * 0.22; // Calibrated sensitivity for defense
+  const toFactor = state.sliders.turnover * 2.8;          // Turnovers
+  const crowdImpact = game.isHome ? (state.sliders.crowd - 100) * 0.15 : -(state.sliders.crowd - 100) * 0.12;
 
   let winProb = game.baseWinProb + qbFactor + defFactor + toFactor + crowdImpact;
   winProb = Math.max(1.0, Math.min(99.4, winProb));
 
-  // Dynamic score adjustments
-  const utPtsDelta = Math.round((qbFactor * 0.35) + (toFactor * 0.5) + (crowdImpact * 0.2));
-  const oppPtsDelta = Math.round(-(defFactor * 0.35) - (toFactor * 0.4) - (crowdImpact * 0.2));
-
-  const projUt = Math.max(6, game.projScoreUt + utPtsDelta);
-  const projOpp = Math.max(3, game.projScoreOpp + oppPtsDelta);
+  const scoreDiff = Math.round((winProb - 50) / 2.8);
+  const baseTotal = game.projScoreUt + game.projScoreOpp;
+  let projUt = Math.max(7, Math.round((baseTotal / 2) + (scoreDiff / 2) + (qbFactor / 6)));
+  let projOpp = Math.max(3, Math.round((baseTotal / 2) - (scoreDiff / 2) - (defFactor / 7)));
 
   return {
     winProb: parseFloat(winProb.toFixed(1)),
@@ -1331,8 +1329,8 @@ document.addEventListener('DOMContentLoaded', () => {
         state.sliders = { qbRating: 150, defense: 130, turnover: 3, crowd: 120 };
         showToast('⚡ God Mode loaded: 15-0 Undisputed Champions');
       } else if (preset === 'chaos') {
-        state.sliders = { qbRating: 60, defense: 65, turnover: -2, crowd: 85 };
-        showToast('🚨 Upset Chaos loaded: 8-4 Season Meltdown');
+        state.sliders = { qbRating: 80, defense: 80, turnover: -1, crowd: 85 };
+        showToast('🚨 Upset Chaos loaded: 8-4 Season Struggles');
       }
 
       if (qbSlider) qbSlider.value = state.sliders.qbRating;
@@ -1375,10 +1373,16 @@ document.addEventListener('DOMContentLoaded', () => {
     defSlider.value = 100;
     toSlider.value = 0;
     crowdSlider.value = 100;
+
     document.getElementById('qbValDisplay').innerText = '100% (Heisman Form)';
     document.getElementById('defValDisplay').innerText = '100% (Dominant)';
     document.getElementById('turnoverValDisplay').innerText = 'Neutral (0)';
     document.getElementById('crowdValDisplay').innerText = 'DKR 105k+ Roar';
+
+    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+    const baselineBtn = document.querySelector('.preset-btn[data-preset="baseline"]');
+    if (baselineBtn) baselineBtn.classList.add('active');
+
     updatePicksFromTuning();
     showToast('Simulation weights reset to baseline.');
   });
