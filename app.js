@@ -378,6 +378,7 @@ const SCHEDULE_DATA = [
 // App State
 const state = {
   activeFilter: 'all',
+  simWeek: 'preseason',
   gamePicks: {}, // id -> 'W' or 'L'
   activeModalGame: null,
   radarCategories: ['Offensive EPA', 'Pass Rush Havoc', 'Rush Success', 'Red Zone TD%', '3rd Down Stops', 'Turnover Margin'],
@@ -388,6 +389,54 @@ const state = {
     crowd: 100
   },
   audioEnabled: false
+};
+
+// SEC Hostile Road Chaos Venues (100k+ Stadium Noise & Upset Trap Factor)
+const SEC_ROAD_CHAOS_VENUES = ['week-9', 'week-7', 'week-12']; // LSU (Death Valley), Tennessee (Neyland), Texas A&M (Kyle Field)
+
+// Completed Week Official Lock Presets
+const WEEK_LOCK_PRESETS = {
+  'preseason': {},
+  'week-1': {
+    'week-1': { isFinal: true, scoreUt: 52, scoreOpp: 10, isWin: true, summary: 'OFFICIAL FINAL: Texas rolls in season opener behind 4 Arch Manning TD passes.' }
+  },
+  'week-2': {
+    'week-1': { isFinal: true, scoreUt: 52, scoreOpp: 10, isWin: true },
+    'week-2': { isFinal: true, scoreUt: 31, scoreOpp: 24, isWin: true, summary: 'OFFICIAL FINAL: Thriller in Austin! Goal-line stand seals signature victory vs Ohio State.' }
+  },
+  'week-6': {
+    'week-1': { isFinal: true, scoreUt: 52, scoreOpp: 10, isWin: true },
+    'week-2': { isFinal: true, scoreUt: 31, scoreOpp: 24, isWin: true },
+    'week-3': { isFinal: true, scoreUt: 48, scoreOpp: 13, isWin: true },
+    'week-4': { isFinal: true, scoreUt: 34, scoreOpp: 20, isWin: true },
+    'week-5': { isFinal: true, scoreUt: 38, scoreOpp: 14, isWin: true },
+    'week-6': { isFinal: true, scoreUt: 34, scoreOpp: 27, isWin: true, summary: 'OFFICIAL FINAL: Red River shootout victory! Golden Hat stays in Austin.' }
+  },
+  'week-9': {
+    'week-1': { isFinal: true, scoreUt: 52, scoreOpp: 10, isWin: true },
+    'week-2': { isFinal: true, scoreUt: 31, scoreOpp: 24, isWin: true },
+    'week-3': { isFinal: true, scoreUt: 48, scoreOpp: 13, isWin: true },
+    'week-4': { isFinal: true, scoreUt: 34, scoreOpp: 20, isWin: true },
+    'week-5': { isFinal: true, scoreUt: 38, scoreOpp: 14, isWin: true },
+    'week-6': { isFinal: true, scoreUt: 34, scoreOpp: 27, isWin: true },
+    'week-7': { isFinal: true, scoreUt: 31, scoreOpp: 24, isWin: true },
+    'week-8': { isFinal: true, scoreUt: 41, scoreOpp: 17, isWin: true },
+    'week-9': { isFinal: true, scoreUt: 28, scoreOpp: 31, isWin: false, summary: 'OFFICIAL FINAL: Hostile Death Valley night game slips away in the final 2 minutes.' }
+  },
+  'week-12': {
+    'week-1': { isFinal: true, scoreUt: 52, scoreOpp: 10, isWin: true },
+    'week-2': { isFinal: true, scoreUt: 31, scoreOpp: 24, isWin: true },
+    'week-3': { isFinal: true, scoreUt: 48, scoreOpp: 13, isWin: true },
+    'week-4': { isFinal: true, scoreUt: 34, scoreOpp: 20, isWin: true },
+    'week-5': { isFinal: true, scoreUt: 38, scoreOpp: 14, isWin: true },
+    'week-6': { isFinal: true, scoreUt: 34, scoreOpp: 27, isWin: true },
+    'week-7': { isFinal: true, scoreUt: 31, scoreOpp: 24, isWin: true },
+    'week-8': { isFinal: true, scoreUt: 41, scoreOpp: 17, isWin: true },
+    'week-9': { isFinal: true, scoreUt: 28, scoreOpp: 31, isWin: false },
+    'week-10': { isFinal: true, scoreUt: 38, scoreOpp: 13, isWin: true },
+    'week-11': { isFinal: true, scoreUt: 34, scoreOpp: 20, isWin: true },
+    'week-12': { isFinal: true, scoreUt: 31, scoreOpp: 24, isWin: true, summary: 'OFFICIAL FINAL: Lone Star Showdown victory in College Station!' }
+  }
 };
 
 // Initialize default picks to projected outcomes
@@ -415,7 +464,6 @@ function playSound(type) {
     const now = audioCtx.currentTime;
 
     if (type === 'whistle') {
-      // Referee Whistle Chirp
       const osc1 = audioCtx.createOscillator();
       const osc2 = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
@@ -432,7 +480,6 @@ function playSound(type) {
       osc1.stop(now + 0.35);
       osc2.stop(now + 0.35);
     } else if (type === 'horn') {
-      // Stadium Horn / Touchdown blast
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
       osc.type = 'sawtooth';
@@ -461,11 +508,33 @@ function playSound(type) {
   }
 }
 
-// Calculate adjusted win probability and scores based on sliders
+// Calculate adjusted win probability and scores based on sliders & SEC Road Chaos
 function calculateAdjustedMatchup(game) {
-  const qbFactor = (state.sliders.qbRating - 100) * 0.28; // Calibrated sensitivity for Arch Manning form
-  const defFactor = (state.sliders.defense - 100) * 0.22; // Calibrated sensitivity for defense
-  const toFactor = state.sliders.turnover * 2.8;          // Turnovers
+  // If game is locked as official final in current season week, return locked data
+  const currentLocks = WEEK_LOCK_PRESETS[state.simWeek] || {};
+  if (currentLocks[game.id] && currentLocks[game.id].isFinal) {
+    const lock = currentLocks[game.id];
+    return {
+      winProb: lock.isWin ? 100.0 : 0.0,
+      projUt: lock.scoreUt,
+      projOpp: lock.scoreOpp,
+      isLocked: true,
+      isWin: lock.isWin,
+      summary: lock.summary
+    };
+  }
+
+  const qbFactor = (state.sliders.qbRating - 100) * 0.28;
+  const defFactor = (state.sliders.defense - 100) * 0.22;
+  let toFactor = state.sliders.turnover * 2.8;
+
+  // SEC Road Chaos: Hostile venues amplify negative turnover luck
+  if (!game.isHome && SEC_ROAD_CHAOS_VENUES.includes(game.id)) {
+    if (state.sliders.turnover < 0) {
+      toFactor *= 1.45; // Amplified road turnover trap
+    }
+  }
+
   const crowdImpact = game.isHome ? (state.sliders.crowd - 100) * 0.15 : -(state.sliders.crowd - 100) * 0.12;
 
   let winProb = game.baseWinProb + qbFactor + defFactor + toFactor + crowdImpact;
@@ -479,15 +548,22 @@ function calculateAdjustedMatchup(game) {
   return {
     winProb: parseFloat(winProb.toFixed(1)),
     projUt,
-    projOpp
+    projOpp,
+    isLocked: false,
+    isWin: winProb >= 50.0
   };
 }
 
 // Automatically recalculate every matchup pick and playoff seeding when sliders move
 function updatePicksFromTuning() {
+  const currentLocks = WEEK_LOCK_PRESETS[state.simWeek] || {};
   SCHEDULE_DATA.forEach(game => {
-    const adj = calculateAdjustedMatchup(game);
-    state.gamePicks[game.id] = adj.winProb >= 50.0 ? 'W' : 'L';
+    if (currentLocks[game.id] && currentLocks[game.id].isFinal) {
+      state.gamePicks[game.id] = currentLocks[game.id].isWin ? 'W' : 'L';
+    } else {
+      const adj = calculateAdjustedMatchup(game);
+      state.gamePicks[game.id] = adj.winProb >= 50.0 ? 'W' : 'L';
+    }
   });
   renderSchedule();
   updateTopMetricsAndPlayoff();
@@ -613,13 +689,16 @@ function renderSchedule() {
     const adj = calculateAdjustedMatchup(game);
     const userPick = state.gamePicks[game.id];
     const isWin = userPick === 'W';
+    const isHostileRoad = !game.isHome && SEC_ROAD_CHAOS_VENUES.includes(game.id);
 
     return `
-      <div class="game-card ${game.isMarquee ? 'marquee-border' : ''}" data-id="${game.id}">
+      <div class="game-card ${game.isMarquee ? 'marquee-border' : ''} ${adj.isLocked ? 'locked-card' : ''}" data-id="${game.id}">
         <div class="card-top">
           <div class="week-tag">${game.week} • ${game.date}</div>
           <div class="stadium-location">
             <i class="fa-solid fa-location-dot"></i> ${game.isHome ? 'DKR Austin' : game.location}
+            ${isHostileRoad ? `<span class="road-trap-badge"><i class="fa-solid fa-triangle-exclamation"></i> SEC ROAD TRAP</span>` : ''}
+            ${adj.isLocked ? `<span class="locked-game-badge"><i class="fa-solid fa-lock"></i> OFFICIAL FINAL</span>` : ''}
           </div>
         </div>
 
@@ -630,7 +709,7 @@ function renderSchedule() {
             <div class="team-logo-circle ut-logo">🤘</div>
             <div class="team-text">
               <span class="team-abbr">TEXAS</span>
-              <span class="team-ranking-sub">#2 AP</span>
+              <span class="team-ranking-sub">#1 AP</span>
             </div>
           </div>
 
@@ -640,7 +719,7 @@ function renderSchedule() {
               <span class="score-divider">-</span>
               <span style="color: ${adj.projOpp > adj.projUt ? '#FF9B42' : '#9CA3AF'}">${adj.projOpp}</span>
             </div>
-            <div class="vegas-line">${game.vegasSpread > 0 ? `+${game.vegasSpread}` : game.vegasSpread} | O/U ${game.overUnder}</div>
+            <div class="vegas-line">${adj.isLocked ? 'FINAL SCORE' : `${game.vegasSpread > 0 ? `+${game.vegasSpread}` : game.vegasSpread} | O/U ${game.overUnder}`}</div>
           </div>
 
           <div class="team-pill away">
@@ -656,8 +735,8 @@ function renderSchedule() {
 
         <div class="card-stats-row">
           <div class="prob-labels-sm">
-            <span class="${adj.winProb >= 50 ? 'text-orange' : 'text-danger'}">Win Prob: ${adj.winProb}%</span>
-            <span class="text-muted">${(100 - adj.winProb).toFixed(1)}%</span>
+            <span class="${adj.winProb >= 50 ? 'text-orange' : 'text-danger'}">${adj.isLocked ? (adj.isWin ? 'OFFICIAL WIN' : 'OFFICIAL LOSS') : `Win Prob: ${adj.winProb}%`}</span>
+            <span class="text-muted">${adj.isLocked ? 'LOCKED' : `${(100 - adj.winProb).toFixed(1)}%`}</span>
           </div>
           <div class="prob-track-sm">
             <div class="prob-fill-sm" style="width: ${adj.winProb}%; background: ${adj.winProb >= 50 ? 'linear-gradient(90deg, var(--color-burnt-orange), var(--color-orange-light))' : 'linear-gradient(90deg, #991B1B, #EF4444)'}"></div>
@@ -667,12 +746,12 @@ function renderSchedule() {
         <div class="card-actions">
           <div class="wl-toggle-wrap">
             <span>Result:</span>
-            <button class="wl-toggle-btn ${isWin ? 'win' : 'loss'}" data-game-id="${game.id}" title="Toggle Win / Loss">
+            <button class="wl-toggle-btn ${isWin ? 'win' : 'loss'}" data-game-id="${game.id}" title="${adj.isLocked ? 'Official Completed Game' : 'Toggle Win / Loss'}" ${adj.isLocked ? 'disabled style="opacity: 0.6; cursor: not-allowed;"' : ''}>
               ${isWin ? 'W' : 'L'}
             </button>
           </div>
           <button class="sim-btn-sm" data-sim-id="${game.id}">
-            <i class="fa-solid fa-play"></i> Simulate
+            <i class="fa-solid fa-play"></i> ${adj.isLocked ? 'Box Score' : 'Simulate'}
           </button>
         </div>
       </div>
@@ -683,8 +762,11 @@ function renderSchedule() {
   grid.querySelectorAll('.wl-toggle-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
-      playSound('click');
       const gId = btn.getAttribute('data-game-id');
+      const currentLocks = WEEK_LOCK_PRESETS[state.simWeek] || {};
+      if (currentLocks[gId] && currentLocks[gId].isFinal) return; // Prevent altering locked games
+
+      playSound('click');
       state.gamePicks[gId] = state.gamePicks[gId] === 'W' ? 'L' : 'W';
       renderSchedule();
       updateTopMetricsAndPlayoff();
@@ -1052,11 +1134,14 @@ function getContextAwareHotTake(game, adj) {
   }
 }
 
-// Group Chat Hype Card Canvas Generator
+// Group Chat Hype Card Canvas Generator (High-DPI Retina 1200x1500)
 function drawHypeCard() {
   const canvas = document.getElementById('hypeCardCanvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
+  
+  canvas.width = 1200;
+  canvas.height = 1500;
   const w = canvas.width;
   const h = canvas.height;
 
@@ -1075,123 +1160,158 @@ function drawHypeCard() {
   // Background Gradient
   const bgGrad = ctx.createLinearGradient(0, 0, w, h);
   bgGrad.addColorStop(0, '#10141E');
-  bgGrad.addColorStop(0.5, '#07090E');
+  bgGrad.addColorStop(0.4, '#080A10');
   bgGrad.addColorStop(1, '#BF5700');
   ctx.fillStyle = bgGrad;
   ctx.fillRect(0, 0, w, h);
 
-  // Border & Glow
+  // Decorative Stadium Grid Lines
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+  ctx.lineWidth = 2;
+  for (let i = 0; i < w; i += 80) {
+    ctx.beginPath();
+    ctx.moveTo(i, 0);
+    ctx.lineTo(i, h);
+    ctx.stroke();
+  }
+
+  // Outer Border & Glow
   ctx.strokeStyle = '#FF7A18';
-  ctx.lineWidth = 6;
-  ctx.strokeRect(10, 10, w - 20, h - 20);
+  ctx.lineWidth = 12;
+  ctx.strokeRect(20, 20, w - 40, h - 40);
 
   // Header Badge
   ctx.fillStyle = '#BF5700';
   ctx.beginPath();
-  ctx.roundRect(30, 30, w - 60, 48, 10);
+  ctx.roundRect(60, 60, w - 120, 96, 20);
   ctx.fill();
 
   ctx.fillStyle = '#FFFFFF';
-  ctx.font = 'bold 18px Outfit, sans-serif';
+  ctx.font = 'bold 36px Outfit, sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('🏈 TEXAS LONGHORNS AI GAME DAY ORACLE', w / 2, 60);
+  ctx.fillText('🏈 TEXAS LONGHORNS AI GAME DAY ORACLE', w / 2, 122);
 
   // User Handle / Stamp
   ctx.fillStyle = '#FFB800';
-  ctx.font = 'bold 22px Bebas Neue, sans-serif';
-  ctx.letterSpacing = '1px';
-  ctx.fillText(userHandle.toUpperCase(), w / 2, 115);
+  ctx.font = 'bold 44px Bebas Neue, sans-serif';
+  ctx.fillText(userHandle.toUpperCase(), w / 2, 230);
 
   // Matchup Title
   ctx.fillStyle = '#9CA3AF';
-  ctx.font = '14px Outfit, sans-serif';
-  ctx.fillText(`${game.week} • ${game.stadium.toUpperCase()}`, w / 2, 145);
+  ctx.font = '28px Outfit, sans-serif';
+  ctx.fillText(`${game.week} • ${game.stadium.toUpperCase()}`, w / 2, 285);
 
   // Big Score Card Box
-  ctx.fillStyle = 'rgba(0, 0, 0, 0.65)';
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
   ctx.beginPath();
-  ctx.roundRect(35, 170, w - 70, 220, 16);
+  ctx.roundRect(70, 340, w - 140, 440, 32);
   ctx.fill();
-  ctx.strokeStyle = 'rgba(255, 122, 24, 0.4)';
-  ctx.lineWidth = 2;
+  ctx.strokeStyle = 'rgba(255, 122, 24, 0.5)';
+  ctx.lineWidth = 4;
   ctx.stroke();
 
   // Texas Side
   ctx.fillStyle = '#FF9B42';
-  ctx.font = 'bold 36px Bebas Neue, sans-serif';
+  ctx.font = 'bold 72px Bebas Neue, sans-serif';
   ctx.textAlign = 'left';
-  ctx.fillText('TEXAS 🤘', 60, 230);
+  ctx.fillText('TEXAS 🤘', 120, 460);
   ctx.fillStyle = '#FFFFFF';
-  ctx.font = 'bold 64px Bebas Neue, sans-serif';
-  ctx.fillText(`${adj.projUt}`, 60, 310);
+  ctx.font = 'bold 128px Bebas Neue, sans-serif';
+  ctx.fillText(`${adj.projUt}`, 120, 620);
   ctx.fillStyle = '#10B981';
-  ctx.font = 'bold 14px Outfit, sans-serif';
-  ctx.fillText(`WIN CHANCE: ${adj.winProb}%`, 60, 350);
+  ctx.font = 'bold 28px Outfit, sans-serif';
+  ctx.fillText(`WIN CHANCE: ${adj.winProb}%`, 120, 700);
 
   // VS divider
   ctx.fillStyle = '#6B7280';
-  ctx.font = 'bold 24px Bebas Neue, sans-serif';
+  ctx.font = 'bold 48px Bebas Neue, sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('VS', w / 2, 280);
+  ctx.fillText('VS', w / 2, 560);
 
   // Opponent Side
   ctx.fillStyle = '#E5E7EB';
-  ctx.font = 'bold 36px Bebas Neue, sans-serif';
+  ctx.font = 'bold 72px Bebas Neue, sans-serif';
   ctx.textAlign = 'right';
-  ctx.fillText(`${game.oppAbbr}`, w - 60, 230);
+  ctx.fillText(`${game.oppAbbr}`, w - 120, 460);
   ctx.fillStyle = '#FFFFFF';
-  ctx.font = 'bold 64px Bebas Neue, sans-serif';
-  ctx.fillText(`${adj.projOpp}`, w - 60, 310);
+  ctx.font = 'bold 128px Bebas Neue, sans-serif';
+  ctx.fillText(`${adj.projOpp}`, w - 120, 620);
   ctx.fillStyle = '#9CA3AF';
-  ctx.font = 'bold 14px Outfit, sans-serif';
-  ctx.fillText(`SPREAD: UT ${game.vegasSpread > 0 ? `+${game.vegasSpread}` : game.vegasSpread}`, w - 60, 350);
+  ctx.font = 'bold 28px Outfit, sans-serif';
+  ctx.fillText(`SPREAD: UT ${game.vegasSpread > 0 ? `+${game.vegasSpread}` : game.vegasSpread}`, w - 120, 700);
 
   // Hot Take Box
-  ctx.fillStyle = 'rgba(191, 87, 0, 0.2)';
+  ctx.fillStyle = 'rgba(191, 87, 0, 0.25)';
   ctx.beginPath();
-  ctx.roundRect(35, 415, w - 70, 140, 12);
+  ctx.roundRect(70, 830, w - 140, 380, 24);
   ctx.fill();
   ctx.strokeStyle = '#BF5700';
-  ctx.lineWidth = 1;
+  ctx.lineWidth = 3;
   ctx.stroke();
 
   ctx.fillStyle = '#FFB800';
-  ctx.font = 'bold 14px Outfit, sans-serif';
+  ctx.font = 'bold 28px Outfit, sans-serif';
   ctx.textAlign = 'left';
-  ctx.fillText('🔥 LOCK OF THE WEEK / HOT TAKE:', 55, 445);
+  ctx.fillText('🔥 LOCK OF THE WEEK / HOT TAKE:', 110, 890);
 
   ctx.fillStyle = '#FFFFFF';
-  ctx.font = '16px Outfit, sans-serif';
-  wrapCanvasText(ctx, hotTake, 55, 480, w - 110, 24);
+  wrapCanvasText(ctx, hotTake, 110, 955, w - 220, 46, 30);
 
   // Watermark / Footer
   ctx.fillStyle = '#FF7A18';
-  ctx.font = 'bold 16px Bebas Neue, sans-serif';
+  ctx.font = 'bold 32px Bebas Neue, sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('SIMULATED VIA ANTIGRAVITY AI ENGINE • HOOK \'EM 🤘', w / 2, 600);
+  ctx.fillText('SIMULATED VIA ANTIGRAVITY AI ENGINE • HOOK \'EM 🤘', w / 2, 1330);
 
   ctx.fillStyle = '#9CA3AF';
-  ctx.font = '12px Outfit, sans-serif';
-  ctx.fillText('10,000 Monte Carlo Drives • Real-time SEC Analytics', w / 2, 625);
+  ctx.font = '24px Outfit, sans-serif';
+  ctx.fillText('10,000 Monte Carlo Drives • Real-time SEC Analytics', w / 2, 1380);
 }
 
-// Helper to wrap text on Canvas
-function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight) {
-  const words = text.split(' ');
-  let line = '';
+// Helper to wrap and dynamically fit text on Canvas
+function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight, baseFontSize) {
+  let words = text.split(' ');
+  let fontSize = baseFontSize || 30;
+  ctx.font = `${fontSize}px Outfit, sans-serif`;
+
+  let lines = [];
+  let currentLine = '';
+
   for (let n = 0; n < words.length; n++) {
-    const testLine = line + words[n] + ' ';
-    const metrics = ctx.measureText(testLine);
-    const testWidth = metrics.width;
-    if (testWidth > maxWidth && n > 0) {
-      ctx.fillText(line, x, y);
-      line = words[n] + ' ';
-      y += lineHeight;
+    let testLine = currentLine + (currentLine ? ' ' : '') + words[n];
+    let metrics = ctx.measureText(testLine);
+    if (metrics.width > maxWidth && currentLine !== '') {
+      lines.push(currentLine);
+      currentLine = words[n];
     } else {
-      line = testLine;
+      currentLine = testLine;
     }
   }
-  ctx.fillText(line, x, y);
+  if (currentLine) lines.push(currentLine);
+
+  // Auto shrink font if too many lines
+  if (lines.length > 4) {
+    fontSize = 24;
+    lineHeight = 36;
+    ctx.font = `${fontSize}px Outfit, sans-serif`;
+    lines = [];
+    currentLine = '';
+    for (let n = 0; n < words.length; n++) {
+      let testLine = currentLine + (currentLine ? ' ' : '') + words[n];
+      let metrics = ctx.measureText(testLine);
+      if (metrics.width > maxWidth && currentLine !== '') {
+        lines.push(currentLine);
+        currentLine = words[n];
+      } else {
+        currentLine = testLine;
+      }
+    }
+    if (currentLine) lines.push(currentLine);
+  }
+
+  for (let i = 0; i < lines.length; i++) {
+    ctx.fillText(lines[i], x, y + (i * lineHeight));
+  }
 }
 
 // Toast Helper
@@ -1585,6 +1705,52 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('closeGuideModalBtn').addEventListener('click', () => {
     document.getElementById('guideModal').classList.remove('open');
   });
+
+  // Live Season Week Selector Tabs
+  document.querySelectorAll('.week-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      playSound('click');
+      document.querySelectorAll('.week-pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      state.simWeek = pill.getAttribute('data-week');
+      
+      if (state.simWeek === 'preseason') {
+        showToast('🔄 Preseason Mode: Full 12-game simulator unlocked!');
+      } else {
+        const weekName = pill.innerText.trim();
+        showToast(`🔒 Season Locked to ${weekName} - Past games fixed as finals!`);
+      }
+      
+      updatePicksFromTuning();
+    });
+  });
+
+  // Live Data Sync Feed Button
+  const syncBtn = document.getElementById('syncLiveFeedBtn');
+  if (syncBtn) {
+    syncBtn.addEventListener('click', async () => {
+      playSound('whistle');
+      syncBtn.classList.add('syncing');
+      syncBtn.querySelector('span').innerText = 'Syncing...';
+      
+      // Simulate live API handshake
+      await new Promise(r => setTimeout(r, 600));
+      syncBtn.classList.remove('syncing');
+      syncBtn.querySelector('span').innerText = 'Live Feed Synced';
+      showToast('📡 Live AP Poll & SEC Injury Reports Synced!');
+      
+      // Flash live radar beacon
+      const beacon = document.querySelector('.live-radar-dot');
+      if (beacon) {
+        beacon.style.background = '#10B981';
+        beacon.style.boxShadow = '0 0 16px #10B981';
+        setTimeout(() => {
+          beacon.style.background = 'var(--color-burnt-orange)';
+          beacon.style.boxShadow = '0 0 12px var(--color-orange-glow)';
+        }, 3000);
+      }
+    });
+  }
 
   // Close modals on clicking outside
   window.addEventListener('click', (e) => {

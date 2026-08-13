@@ -33,7 +33,7 @@
   <!-- FontAwesome Icons for Broadcast Glyphs -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
-  <link rel="stylesheet" href="styles.css?v=2026.3">
+  <link rel="stylesheet" href="styles.css?v=2026.5">
 </head>
 <body class="dark-theme">
 
@@ -74,6 +74,40 @@
 
   <!-- Main Dashboard Container -->
   <main class="main-content">
+
+    <!-- Live Season Mode & Data Feed Bar -->
+    <section class="live-season-banner">
+      <div class="live-feed-info">
+        <div class="live-feed-badge">
+          <span class="live-radar-dot"></span>
+          <span class="live-feed-title"><i class="fa-solid fa-satellite-dish text-orange"></i> LIVE NCAA FEED</span>
+        </div>
+        <div class="live-ticker-items">
+          <span class="ticker-pill ap-rank-pill"><i class="fa-solid fa-ranking-star"></i> AP POLL: <strong>#1 TEXAS</strong> (1,540 PTS)</span>
+          <span class="ticker-pill injury-pill"><i class="fa-solid fa-heart-pulse text-success"></i> INJURY REPORT: <strong>ARCH MANNING 100% HEALTHY</strong> (QB1)</span>
+          <span class="ticker-pill defense-pill"><i class="fa-solid fa-shield text-cyan"></i> DKR NOISE: <strong>105,213 CAPACITY</strong></span>
+        </div>
+        <button id="syncLiveFeedBtn" class="sync-feed-btn" title="Refresh live AP poll rankings and roster intel">
+          <i class="fa-solid fa-arrows-rotate"></i> <span>Sync Live Data</span>
+        </button>
+      </div>
+
+      <!-- Live Season Week Progression Lockout Control -->
+      <div class="season-progression-row">
+        <div class="progression-label">
+          <i class="fa-solid fa-calendar-check text-orange"></i>
+          <span>SEASON PROGRESSION SIMULATOR (LOCKS PAST WEEKS):</span>
+        </div>
+        <div class="week-pill-tabs" id="seasonWeekTabs">
+          <button class="week-pill active" data-week="preseason">Preseason (Full 12-Game Sim)</button>
+          <button class="week-pill" data-week="week-1">After Week 1 (TXST Win)</button>
+          <button class="week-pill" data-week="week-2">After Week 2 (Ohio State Clash)</button>
+          <button class="week-pill" data-week="week-6">After Week 6 (Red River Shootout)</button>
+          <button class="week-pill" data-week="week-9">After Week 9 (Death Valley at LSU)</button>
+          <button class="week-pill" data-week="week-12">After Week 12 (Lone Star Showdown)</button>
+        </div>
+      </div>
+    </section>
 
     <!-- Hero Section / Hype Marquee -->
     <section class="hero-section">
@@ -558,7 +592,7 @@
 
         <!-- Canvas Card Render Preview -->
         <div class="card-preview-container">
-          <canvas id="hypeCardCanvas" width="600" height="750"></canvas>
+          <canvas id="hypeCardCanvas" width="1200" height="1500"></canvas>
         </div>
       </div>
     </div>
@@ -642,6 +676,6 @@ gh repo create texas-football-predictor --public --source=. --push</code></pre>
     </div>
   </footer>
 
-  <script src="app.js?v=2026.3"></script>
+  <script src="app.js?v=2026.5"></script>
 </body>
 </html>
