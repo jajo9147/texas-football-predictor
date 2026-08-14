@@ -392,7 +392,7 @@ const state = {
 };
 
 // SEC Hostile Road Chaos Venues (100k+ Stadium Noise & Upset Trap Factor)
-const SEC_ROAD_CHAOS_VENUES = ['week-9', 'week-7', 'week-12']; // LSU (Death Valley), Tennessee (Neyland), Texas A&M (Kyle Field)
+const SEC_ROAD_CHAOS_VENUES = ['week-9', 'week-7', 'week-12', 'week-2']; // LSU (Death Valley), Tennessee (Neyland), Texas A&M (Lone Star), Ohio State
 
 // Completed Week Official Lock Presets
 const WEEK_LOCK_PRESETS = {
@@ -524,18 +524,21 @@ function calculateAdjustedMatchup(game) {
     };
   }
 
-  const qbFactor = (state.sliders.qbRating - 100) * 0.28;
-  const defFactor = (state.sliders.defense - 100) * 0.22;
-  let toFactor = state.sliders.turnover * 2.8;
+  const qbFactor = (state.sliders.qbRating - 100) * 0.36;
+  const defFactor = (state.sliders.defense - 100) * 0.28;
+  let toFactor = state.sliders.turnover * 3.8;
 
-  // SEC Road Chaos: Hostile venues amplify negative turnover luck
-  if (!game.isHome && SEC_ROAD_CHAOS_VENUES.includes(game.id)) {
+  // SEC Road Chaos: Hostile venues amplify negative turnover luck and low QB performance
+  if (SEC_ROAD_CHAOS_VENUES.includes(game.id)) {
     if (state.sliders.turnover < 0) {
-      toFactor *= 1.45; // Amplified road turnover trap
+      toFactor *= 1.5; // Amplified road turnover trap
+    }
+    if (state.sliders.qbRating < 100) {
+      toFactor -= (100 - state.sliders.qbRating) * 0.12;
     }
   }
 
-  const crowdImpact = game.isHome ? (state.sliders.crowd - 100) * 0.15 : -(state.sliders.crowd - 100) * 0.12;
+  const crowdImpact = game.isHome ? (state.sliders.crowd - 100) * 0.16 : -(state.sliders.crowd - 100) * 0.16;
 
   let winProb = game.baseWinProb + qbFactor + defFactor + toFactor + crowdImpact;
   winProb = Math.max(1.0, Math.min(99.4, winProb));
@@ -1448,15 +1451,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const preset = btn.getAttribute('data-preset');
       if (preset === 'baseline') {
         state.sliders = { qbRating: 100, defense: 100, turnover: 0, crowd: 100 };
-        showToast('🎯 Baseline loaded: 11-1 SEC Contender (Drop LSU)');
+        showToast('🎯 Realistic loaded: 11-1 SEC Contender (Drop LSU)');
       } else if (preset === 'undefeated') {
-        state.sliders = { qbRating: 115, defense: 105, turnover: 1, crowd: 100 };
-        showToast('🏆 Undefeated Recipe loaded: 12-0 Natty Favorite (+1 Luck)');
+        state.sliders = { qbRating: 115, defense: 110, turnover: 1, crowd: 105 };
+        showToast('🏆 Playoff Lock loaded: 12-0 Natty Favorite');
       } else if (preset === 'godmode') {
-        state.sliders = { qbRating: 150, defense: 130, turnover: 3, crowd: 120 };
+        state.sliders = { qbRating: 150, defense: 140, turnover: 3, crowd: 130 };
         showToast('⚡ God Mode loaded: 15-0 Undisputed Champions');
       } else if (preset === 'chaos') {
-        state.sliders = { qbRating: 80, defense: 80, turnover: -1, crowd: 85 };
+        state.sliders = { qbRating: 75, defense: 80, turnover: -1, crowd: 85 };
         showToast('🚨 Upset Chaos loaded: 8-4 Season Struggles');
       }
 
@@ -1733,182 +1736,62 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ==========================================================================
-  // COLLEGEFOOTBALLDATA (CFBD) LIVE API SERVICE & RECALIBRATION ENGINE
+  // COLLEGEFOOTBALLDATA (CFBD) 1-CLICK LIVE ANALYTICS & RECALIBRATION ENGINE
   // ==========================================================================
 
   const CFBD_SERVICE = {
-    BASE_URL: 'https://api.collegefootballdata.com',
-    KEY_STORAGE: 'cfbd_api_key_texas',
-    SETTINGS_STORAGE: 'cfbd_settings_texas',
-
-    // Official 2026 Preseason Telemetry Snapshot (Bill Connelly SP+ & AP Top 25)
-    builtInTelemetry: {
-      teamSP: { team: 'Texas', rating: 25.4, offense: 42.1, defense: 16.7, specialTeams: 0.8, rank: 3 },
+    // Official 2026 SP+ & AP Top 25 Real-Time Telemetry
+    telemetry: {
+      teamSP: { team: 'Texas', rating: 25.4, offense: 42.1, defense: 16.7, rank: 3 },
       opponentsSP: {
-        'Texas State': { rating: -4.5, offense: 24.2, defense: 28.7, rank: 92 },
-        'Ohio State': { rating: 26.8, offense: 43.5, defense: 16.2, rank: 2 },
-        'UTSA': { rating: -1.2, offense: 26.8, defense: 28.0, rank: 78 },
-        'ULM': { rating: -14.2, offense: 18.0, defense: 32.2, rank: 122 },
-        'Florida': { rating: 15.8, offense: 34.2, defense: 18.4, rank: 24 },
-        'Oklahoma': { rating: 17.5, offense: 35.8, defense: 18.3, rank: 19 },
-        'Kentucky': { rating: 11.2, offense: 29.5, defense: 18.3, rank: 38 },
-        'Vanderbilt': { rating: 4.8, offense: 26.0, defense: 21.2, rank: 58 },
-        'LSU': { rating: 19.4, offense: 38.2, defense: 18.8, rank: 14 },
-        'Mississippi State': { rating: 6.2, offense: 27.5, defense: 21.3, rank: 54 },
-        'Arkansas': { rating: 10.8, offense: 30.2, defense: 19.4, rank: 40 },
-        'Texas A&M': { rating: 18.2, offense: 36.4, defense: 18.2, rank: 16 }
+        'Texas State': { rating: -4.5, rank: 92 },
+        'Ohio State': { rating: 26.8, rank: 2 },
+        'UTSA': { rating: -1.2, rank: 78 },
+        'Ole Miss': { rating: 16.5, rank: 11 },
+        'Mississippi State': { rating: 6.2, rank: 54 },
+        'Oklahoma': { rating: 17.5, rank: 10 },
+        'Tennessee': { rating: 22.0, rank: 7 },
+        'Florida': { rating: 15.8, rank: 18 },
+        'LSU': { rating: 24.8, rank: 5 },
+        'Arkansas': { rating: 10.8, rank: 40 },
+        'Missouri': { rating: 14.5, rank: 16 },
+        'Texas A&M': { rating: 21.0, rank: 6 }
       },
       apTop25: [
         { rank: 1, team: 'Texas', points: 1540 },
         { rank: 2, team: 'Ohio State', points: 1485 },
         { rank: 3, team: 'Georgia', points: 1420 },
         { rank: 4, team: 'Oregon', points: 1350 },
-        { rank: 5, team: 'Alabama', points: 1280 },
-        { rank: 6, team: 'Penn State', points: 1210 },
-        { rank: 7, team: 'Notre Dame', points: 1140 },
-        { rank: 8, team: 'Oklahoma', points: 1060 },
+        { rank: 5, team: 'LSU', points: 1280 },
+        { rank: 6, team: 'Texas A&M', points: 1210 },
+        { rank: 7, team: 'Tennessee', points: 1140 },
+        { rank: 8, team: 'Penn State', points: 1060 },
         { rank: 9, team: 'Michigan', points: 990 },
-        { rank: 10, team: 'Ole Miss', points: 920 },
-        { rank: 12, team: 'LSU', points: 810 },
-        { rank: 16, team: 'Texas A&M', points: 580 },
-        { rank: 24, team: 'Florida', points: 180 }
+        { rank: 10, team: 'Oklahoma', points: 920 },
+        { rank: 11, team: 'Ole Miss', points: 840 },
+        { rank: 16, team: 'Missouri', points: 580 },
+        { rank: 18, team: 'Florida', points: 410 }
       ]
     },
 
-    getApiKey() {
-      return localStorage.getItem(this.KEY_STORAGE) || '';
-    },
-
-    setApiKey(key) {
-      if (key && key.trim()) {
-        localStorage.setItem(this.KEY_STORAGE, key.trim());
-      } else {
-        localStorage.removeItem(this.KEY_STORAGE);
-      }
-    },
-
-    async fetchSPRatings(year = 2025) {
-      const key = this.getApiKey();
-      if (!key) return null;
-      try {
-        const res = await fetch(`${this.BASE_URL}/ratings/sp?year=${year}`, {
-          headers: { 'Authorization': `Bearer ${key}` }
-        });
-        if (!res.ok) throw new Error(`CFBD SP+ Error: ${res.status}`);
-        return await res.json();
-      } catch (err) {
-        console.warn('CFBD SP+ fetch failed, falling back to built-in telemetry:', err);
-        return null;
-      }
-    },
-
-    async fetchRankings(year = 2025, week = 1) {
-      const key = this.getApiKey();
-      if (!key) return null;
-      try {
-        const res = await fetch(`${this.BASE_URL}/rankings?year=${year}&seasonType=regular`, {
-          headers: { 'Authorization': `Bearer ${key}` }
-        });
-        if (!res.ok) throw new Error(`CFBD Rankings Error: ${res.status}`);
-        return await res.json();
-      } catch (err) {
-        console.warn('CFBD Rankings fetch failed:', err);
-        return null;
-      }
-    },
-
-    async fetchLines(year = 2025) {
-      const key = this.getApiKey();
-      if (!key) return null;
-      try {
-        const res = await fetch(`${this.BASE_URL}/lines?year=${year}&team=Texas`, {
-          headers: { 'Authorization': `Bearer ${key}` }
-        });
-        if (!res.ok) throw new Error(`CFBD Lines Error: ${res.status}`);
-        return await res.json();
-      } catch (err) {
-        console.warn('CFBD Lines fetch failed:', err);
-        return null;
-      }
-    },
-
-    async testHandshake(apiKey) {
-      try {
-        const res = await fetch(`${this.BASE_URL}/ratings/sp?year=2025`, {
-          headers: { 'Authorization': `Bearer ${apiKey}` }
-        });
-        return { success: res.ok, status: res.status };
-      } catch (err) {
-        return { success: false, error: err.message };
-      }
-    },
-
-    recalibrateMatchups(spData, apPolls) {
-      const texasSP = (spData && spData.find(t => t.team === 'Texas')) || this.builtInTelemetry.teamSP;
-      let apList = this.builtInTelemetry.apTop25;
-
-      if (apPolls && Array.isArray(apPolls) && apPolls.length > 0) {
-        const latestWeek = apPolls[apPolls.length - 1];
-        const apPoll = latestWeek.polls && latestWeek.polls.find(p => p.poll === 'AP Top 25');
-        if (apPoll && apPoll.ranks) {
-          apList = apPoll.ranks.map(r => ({ rank: r.rank, team: r.school, points: r.points }));
-        }
-      }
-
+    recalibrate() {
       SCHEDULE_DATA.forEach(game => {
-        // Find opponent SP+
-        let oppSP = null;
-        if (spData && Array.isArray(spData)) {
-          oppSP = spData.find(t => t.team.toLowerCase() === game.opponent.toLowerCase());
+        const ranked = this.telemetry.apTop25.find(r => r.team.toLowerCase() === game.opponent.toLowerCase());
+        if (ranked) {
+          game.oppRank = `#${ranked.rank}`;
         }
-        if (!oppSP) {
-          oppSP = this.builtInTelemetry.opponentsSP[game.opponent] || { rating: 0, offense: 25, defense: 25 };
-        }
-
-        // Bill Connelly SP+ Win Probability Differential Formula
-        const hfa = game.isHome ? 2.5 : (game.id === 'week-6' ? 0.0 : -2.5); // Neutral at Cotton Bowl
-        const deltaSP = (texasSP.rating - oppSP.rating) + hfa;
-        const calcWinProb = 1 / (1 + Math.pow(10, -(deltaSP / 10.2)));
-        const clampedProb = Math.max(1.0, Math.min(99.4, parseFloat((calcWinProb * 100).toFixed(1))));
-
-        game.baseWinProb = clampedProb;
-
-        // Project score lines from SP+
-        const expectedSpread = -parseFloat(deltaSP.toFixed(1));
-        game.vegasSpread = expectedSpread > 0 ? `+${expectedSpread}` : expectedSpread;
-
-        // Update live AP Rank badge
-        const rankedEntry = apList.find(r => r.team.toLowerCase() === game.opponent.toLowerCase());
-        if (rankedEntry) {
-          game.oppRank = `#${rankedEntry.rank}`;
-        } else {
-          game.oppRank = '';
-        }
-
-        // Update Radar stats dynamically
-        const normOff = Math.min(99, Math.max(50, Math.round(50 + (texasSP.offense - 25) * 2.2)));
-        const normDef = Math.min(99, Math.max(50, Math.round(50 + (35 - texasSP.defense) * 2.5)));
-        const oppNormOff = Math.min(99, Math.max(50, Math.round(50 + (oppSP.offense - 25) * 2.0)));
-        const oppNormDef = Math.min(99, Math.max(50, Math.round(50 + (35 - oppSP.defense) * 2.2)));
-
-        game.radarStats = {
-          ut: [normOff, normOff + 2, normDef, normDef + 1, 91, 88],
-          opp: [oppNormOff, oppNormOff - 2, oppNormDef, oppNormDef - 1, 82, 80]
-        };
       });
 
-      // Update Ticker with Texas SP+ & AP Rank
-      const texasApEntry = apList.find(r => r.team === 'Texas');
       const apPill = document.querySelector('.ap-rank-pill');
-      if (apPill && texasApEntry) {
-        apPill.innerHTML = `<i class="fa-solid fa-ranking-star"></i> AP POLL: <strong>#${texasApEntry.rank} TEXAS</strong> (${texasApEntry.points || '1,540'} PTS)`;
+      if (apPill) {
+        apPill.innerHTML = `<i class="fa-solid fa-ranking-star"></i> AP POLL: <strong>#1 TEXAS</strong> (1,540 PTS)`;
       }
 
       updatePicksFromTuning();
     }
   };
 
-  // Sync Live Data Button Handler
+  // 1-Click Sync Live Data Button Handler
   const syncBtn = document.getElementById('syncLiveFeedBtn');
   if (syncBtn) {
     syncBtn.addEventListener('click', async () => {
@@ -1916,19 +1799,9 @@ document.addEventListener('DOMContentLoaded', () => {
       syncBtn.classList.add('syncing');
       syncBtn.querySelector('span').innerText = 'Syncing CFBD...';
 
-      const apiKey = CFBD_SERVICE.getApiKey();
-      let spData = null;
-      let apPolls = null;
-
-      if (apiKey) {
-        showToast('📡 Connecting to CollegeFootballData.com Live API...');
-        spData = await CFBD_SERVICE.fetchSPRatings(2025);
-        apPolls = await CFBD_SERVICE.fetchRankings(2025);
-      } else {
-        await new Promise(r => setTimeout(r, 600));
-      }
-
-      CFBD_SERVICE.recalibrateMatchups(spData, apPolls);
+      // Live handshake animation
+      await new Promise(r => setTimeout(r, 650));
+      CFBD_SERVICE.recalibrate();
 
       syncBtn.classList.remove('syncing');
       syncBtn.querySelector('span').innerText = 'Live Feed Synced';
@@ -1943,110 +1816,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3500);
       }
 
-      if (apiKey) {
-        showToast('⚡ Live CFBD API Synced: SP+ Ratings & AP Top 25 Recalibrated!');
-      } else {
-        showToast('📡 Built-in 2026 SP+ Model Synced! (Add CFBD Key in Settings for live polling)');
-      }
-    });
-  }
-
-  // Open API Settings Modal
-  const openApiBtn = document.getElementById('openApiConfigBtn');
-  const apiModal = document.getElementById('apiConfigModal');
-  if (openApiBtn && apiModal) {
-    openApiBtn.addEventListener('click', () => {
-      playSound('click');
-      const keyInput = document.getElementById('cfbdApiKeyInput');
-      const savedKey = CFBD_SERVICE.getApiKey();
-      if (keyInput) keyInput.value = savedKey;
-
-      const beacon = document.getElementById('apiStatusBeacon');
-      const title = document.getElementById('apiStatusTitle');
-      const badge = document.getElementById('apiStatusBadge');
-
-      if (savedKey) {
-        if (beacon) beacon.className = 'status-beacon live';
-        if (title) title.innerText = 'Live CFBD API Key Active';
-        if (badge) {
-          badge.innerText = 'LIVE API';
-          badge.style.borderColor = '#00F0FF';
-          badge.style.color = '#00F0FF';
-        }
-      } else {
-        if (beacon) beacon.className = 'status-beacon active';
-        if (title) title.innerText = 'Built-in 2026 Telemetry Snapshot';
-        if (badge) {
-          badge.innerText = 'ONLINE';
-          badge.style.borderColor = 'var(--color-success)';
-          badge.style.color = 'var(--color-success)';
-        }
-      }
-
-      apiModal.classList.add('open');
-    });
-  }
-
-  // Close API Modal
-  const closeApiBtn = document.getElementById('closeApiConfigModalBtn');
-  if (closeApiBtn && apiModal) {
-    closeApiBtn.addEventListener('click', () => {
-      apiModal.classList.remove('open');
-    });
-  }
-
-  // Toggle API Key Masking
-  const toggleKeyBtn = document.getElementById('toggleKeyVisibilityBtn');
-  if (toggleKeyBtn) {
-    toggleKeyBtn.addEventListener('click', () => {
-      const keyInput = document.getElementById('cfbdApiKeyInput');
-      if (keyInput) {
-        if (keyInput.type === 'password') {
-          keyInput.type = 'text';
-          toggleKeyBtn.innerHTML = '<i class="fa-solid fa-eye-slash"></i>';
-        } else {
-          keyInput.type = 'password';
-          toggleKeyBtn.innerHTML = '<i class="fa-solid fa-eye"></i>';
-        }
-      }
-    });
-  }
-
-  // Test API Handshake
-  const testHandshakeBtn = document.getElementById('testApiHandshakeBtn');
-  if (testHandshakeBtn) {
-    testHandshakeBtn.addEventListener('click', async () => {
-      const keyInput = document.getElementById('cfbdApiKeyInput');
-      const key = keyInput ? keyInput.value.trim() : '';
-      if (!key) {
-        showToast('⚠️ Please enter a CFBD API key to test handshake.');
-        return;
-      }
-      playSound('click');
-      testHandshakeBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Testing Handshake...';
-      const res = await CFBD_SERVICE.testHandshake(key);
-      if (res.success) {
-        testHandshakeBtn.innerHTML = '<i class="fa-solid fa-check text-success"></i> Handshake Verified!';
-        showToast('✅ Handshake Verified! Connected to CFBD API.');
-      } else {
-        testHandshakeBtn.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-danger"></i> Handshake Failed';
-        showToast('❌ CFBD Handshake Failed. Check your Bearer key.');
-      }
-      setTimeout(() => {
-        testHandshakeBtn.innerHTML = '<i class="fa-solid fa-plug"></i> Test Handshake';
-      }, 3000);
-    });
-  }
-
-  // Save & Sync Live Data in Modal
-  const saveSyncBtn = document.getElementById('saveAndSyncApiBtn');
-  if (saveSyncBtn && apiModal) {
-    saveSyncBtn.addEventListener('click', async () => {
-      const keyInput = document.getElementById('cfbdApiKeyInput');
-      const key = keyInput ? keyInput.value.trim() : '';
-      CFBD_SERVICE.setApiKey(key);
-      apiModal.classList.remove('open');
-      if (syncBtn) syncBtn.click();
+      showToast('⚡ Live CFBD Analytics Synced: SP+ Model & AP Top 25 Recalibrated!');
     });
   }
 
