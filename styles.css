@@ -56,12 +56,16 @@ html {
   scroll-behavior: smooth;
   font-size: 16px;
   color-scheme: dark;
+  background-color: var(--color-bg-base) !important;
+  background: var(--color-bg-base) !important;
 }
 
 body {
   font-family: var(--font-body);
-  background-color: var(--color-bg-base);
+  background-color: var(--color-bg-base) !important;
+  background: var(--color-bg-base) !important;
   color: var(--color-text-main);
+  color-scheme: dark;
   min-height: 100vh;
   overflow-x: hidden;
   position: relative;
