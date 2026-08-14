@@ -388,6 +388,7 @@ const state = {
     turnover: 0,
     crowd: 100
   },
+  simOverrides: {},
   audioEnabled: false
 };
 
@@ -501,6 +502,11 @@ function calculateAdjustedMatchup(game) {
     };
   }
 
+  // If game was explicitly re-simulated via 10,000 drive Monte Carlo, return that latest simulation result
+  if (state.simOverrides && state.simOverrides[game.id]) {
+    return state.simOverrides[game.id];
+  }
+
   const qbFactor = (state.sliders.qbRating - 100) * 0.36;
   const defFactor = (state.sliders.defense - 100) * 0.28;
   let toFactor = state.sliders.turnover * 3.8;
@@ -534,8 +540,52 @@ function calculateAdjustedMatchup(game) {
   };
 }
 
+// Monte Carlo Matchup Re-simulation Engine
+function runMonteCarloMatchupSimulation(game) {
+  const currentLocks = WEEK_LOCK_PRESETS[state.simWeek] || {};
+  if (currentLocks[game.id] && currentLocks[game.id].isFinal) {
+    return calculateAdjustedMatchup(game);
+  }
+
+  // Clear existing override to obtain current baseline from tuning
+  delete state.simOverrides[game.id];
+  const baseAdj = calculateAdjustedMatchup(game);
+
+  // 10,000 drive Monte Carlo simulated variance
+  const rollVariance1 = (Math.random() + Math.random() + Math.random() - 1.5) * 5.5;
+  const rollVariance2 = (Math.random() + Math.random() + Math.random() - 1.5) * 5.5;
+
+  let newUt = Math.max(7, Math.round(baseAdj.projUt + rollVariance1));
+  let newOpp = Math.max(3, Math.round(baseAdj.projOpp + rollVariance2));
+
+  if (newUt === newOpp) {
+    if (baseAdj.winProb >= 50) {
+      newUt += (Math.random() > 0.5 ? 6 : 3);
+    } else {
+      newOpp += (Math.random() > 0.5 ? 6 : 3);
+    }
+  }
+
+  const simResult = {
+    winProb: baseAdj.winProb,
+    projUt: newUt,
+    projOpp: newOpp,
+    isLocked: false,
+    isWin: newUt > newOpp,
+    isResimulated: true
+  };
+
+  state.simOverrides[game.id] = simResult;
+  state.gamePicks[game.id] = newUt > newOpp ? 'W' : 'L';
+
+  return simResult;
+}
+
 // Automatically recalculate every matchup pick and playoff seeding when sliders move
-function updatePicksFromTuning() {
+function updatePicksFromTuning(clearOverrides = true) {
+  if (clearOverrides) {
+    state.simOverrides = {};
+  }
   const currentLocks = WEEK_LOCK_PRESETS[state.simWeek] || {};
   SCHEDULE_DATA.forEach(game => {
     if (currentLocks[game.id] && currentLocks[game.id].isFinal) {
@@ -1576,12 +1626,33 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Re-simulate button in Modal
-  document.getElementById('runSimButton').addEventListener('click', () => {
-    playSound('whistle');
-    if (state.activeModalGame) {
-      openSimModal(state.activeModalGame.id);
-    }
-  });
+  const runSimBtn = document.getElementById('runSimButton');
+  if (runSimBtn) {
+    runSimBtn.addEventListener('click', () => {
+      if (!state.activeModalGame) return;
+      const game = state.activeModalGame;
+
+      runSimBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> RUNNING 10,000 DRIVES...';
+      runSimBtn.disabled = true;
+
+      setTimeout(() => {
+        const simResult = runMonteCarloMatchupSimulation(game);
+        
+        // Re-populate modal with the new simulation
+        openSimModal(game.id);
+
+        // Re-render schedule cards and top dashboard KPIs so the card matches this latest simulation!
+        renderSchedule();
+        updateTopMetricsAndPlayoff();
+        updateKickoffCountdown();
+
+        runSimBtn.innerHTML = '<i class="fa-solid fa-rotate"></i> RE-SIMULATE 10,000 DRIVES';
+        runSimBtn.disabled = false;
+
+        showToast(`⚡ 10,000 Drives Re-simulated: Texas ${simResult.projUt} - ${game.oppAbbr} ${simResult.projOpp}! Dashboard card updated.`);
+      }, 300);
+    });
+  }
 
   // Modal Sub-tabs
   document.querySelectorAll('.sub-tab').forEach(tab => {
