@@ -550,105 +550,185 @@ function updatePicksFromTuning() {
   updateKickoffCountdown();
 }
 
-// Monte Carlo Drive Simulator for Game Modal
+// Score Decomposition Helper for Game Simulation
+function getScoringComponents(totalScore) {
+  let score = Math.max(0, totalScore);
+  const events = [];
+  if (score === 0) return events;
+
+  let numTDs = Math.floor(score / 7);
+  let remainder = score - (numTDs * 7);
+
+  while (remainder % 3 !== 0 && numTDs > 0) {
+    numTDs--;
+    remainder = score - (numTDs * 7);
+  }
+
+  let numFGs = Math.floor(remainder / 3);
+  let leftover = remainder - (numFGs * 3);
+
+  for (let i = 0; i < numTDs; i++) events.push({ type: 'td', pts: 7 });
+  for (let i = 0; i < numFGs; i++) events.push({ type: 'fg', pts: 3 });
+  if (leftover > 0) {
+    if (events.length > 0 && events[0].type === 'td') {
+      events[0].pts += leftover;
+    } else {
+      events.push({ type: 'fg', pts: leftover });
+    }
+  }
+  return events;
+}
+
+// Monte Carlo Drive Simulator - Guaranteed to Match AI Tuning Projected Score!
 function simulateGameDrives(game, adjusted) {
-  const drives = [];
+  const targetUt = adjusted.projUt;
+  const targetOpp = adjusted.projOpp;
+
+  if (adjusted.isLocked) {
+    return {
+      utScore: targetUt,
+      oppScore: targetOpp,
+      drives: [
+        { quarter: 'FINAL', team: 'OFFICIAL FINAL', result: adjusted.summary || `Official Final: Texas ${targetUt} - ${game.oppAbbr} ${targetOpp}`, type: adjusted.isWin ? 'td' : 'turnover', scoreAfter: `${targetUt} - ${targetOpp}` }
+      ]
+    };
+  }
+
+  const utEvents = getScoringComponents(targetUt);
+  const oppEvents = getScoringComponents(targetOpp);
+
+  const utTdPhrases = [
+    'TOUCHDOWN! Arch Manning launches 42-yd strike down the sideline! (+7)',
+    'TOUCHDOWN! CJ Baxter powers through the goal-line front! (+7)',
+    'TOUCHDOWN! Ryan Wingo shakes defender on crossing route for 28-yd score! (+7)',
+    'TOUCHDOWN! Arch Manning scrambles in from 14 yards out! (+7)',
+    'TOUCHDOWN! Johntay Cook hauls in back-shoulder fade in corner of endzone! (+7)',
+    'TOUCHDOWN! Explosive perimeter sweep beats containment! (+7)',
+    'TOUCHDOWN! 65-yard sprint up the middle silences the defense! (+7)'
+  ];
+
+  const utFgPhrases = [
+    'FIELD GOAL! Bert Auburn splits the uprights from 46 yards! (+3)',
+    'FIELD GOAL! Red zone defensive stand leads to 32-yd field goal. (+3)',
+    'FIELD GOAL! 48-yd boot through the crossbars as half expires! (+3)'
+  ];
+
+  const oppTdPhrases = [
+    `TOUCHDOWN! ${game.opponent} scores on explosive 35-yd deep pass. (+7)`,
+    `TOUCHDOWN! ${game.oppAbbr} punches it in from the 2-yard line. (+7)`,
+    `TOUCHDOWN! Quick-strike perimeter drive finds the end zone. (+7)`,
+    `TOUCHDOWN! ${game.opponent} executes play-action pass over the middle. (+7)`,
+    `TOUCHDOWN! Rushing score off outside tackle containment. (+7)`
+  ];
+
+  const oppFgPhrases = [
+    `FIELD GOAL! ${game.oppAbbr} converts 41-yd field goal after red zone stand. (+3)`,
+    `FIELD GOAL! ${game.oppAbbr} connects on 38-yarder before the half. (+3)`
+  ];
+
+  const utDefStops = [
+    'DEFENSIVE STAND! Anthony Hill Jr. generates 3rd down sack! (Punt)',
+    'TURNOVER! Texas defense forces strip fumble in enemy territory!',
+    'TURNOVER! Michael Taaffe intercepts deflected pass over the middle!',
+    'PUNT. Heavy pressure forces incomplete pass on 3rd & long.'
+  ];
+
+  const oppDefStops = [
+    `PUNT. ${game.oppAbbr} front seven generates pressure on 3rd down.`,
+    `TURNOVER! ${game.oppAbbr} defense jumps out route for interception.`,
+    `PUNT. Texas pinned deep after coverage sack.`
+  ];
+
   const quarters = ['1ST QUARTER', '2ND QUARTER', '3RD QUARTER', '4TH QUARTER'];
-  let utScore = 0;
-  let oppScore = 0;
+  const drives = [];
+  let runningUt = 0;
+  let runningOpp = 0;
 
-  quarters.forEach((q, qIndex) => {
-    const numDrives = 3;
-    for (let i = 0; i < numDrives; i++) {
-      // Texas Drive
-      const utDriveRoll = Math.random() * 100;
-      const utTdThreshold = (adjusted.winProb / 100) * 38;
-      const utFgThreshold = utTdThreshold + 22;
-      const utToThreshold = utFgThreshold + (6 - state.sliders.turnover);
+  let utEventIdx = 0;
+  let oppEventIdx = 0;
 
-      let utResult = '';
-      let utType = '';
-      if (utDriveRoll < utTdThreshold) {
-        utScore += 7;
-        utResult = 'TOUCHDOWN! Arch Manning explosive scoring drive (7 Pts)';
-        utType = 'td';
-      } else if (utDriveRoll < utFgThreshold) {
-        utScore += 3;
-        utResult = 'FIELD GOAL! 45-yd kick splits uprights (3 Pts)';
-        utType = 'fg';
-      } else if (utDriveRoll < utToThreshold) {
-        utResult = 'TURNOVER! Pass picked off or fumble lost on 3rd down';
-        utType = 'turnover';
-      } else {
-        utResult = 'PUNT. Defensive pressure forces 3-and-out';
-        utType = 'punt';
-      }
-
+  quarters.forEach((q, qIdx) => {
+    // Texas drive in this quarter
+    if (utEventIdx < utEvents.length) {
+      const ev = utEvents[utEventIdx++];
+      runningUt += ev.pts;
+      const desc = ev.type === 'td' 
+        ? utTdPhrases[Math.floor(Math.random() * utTdPhrases.length)]
+        : utFgPhrases[Math.floor(Math.random() * utFgPhrases.length)];
       drives.push({
         quarter: q,
         team: 'TEXAS 🤘',
-        result: utResult,
-        type: utType,
-        scoreAfter: `${utScore} - ${oppScore}`
+        result: desc,
+        type: ev.type,
+        scoreAfter: `${runningUt} - ${runningOpp}`
       });
+    } else {
+      drives.push({
+        quarter: q,
+        team: 'TEXAS 🤘',
+        result: oppDefStops[Math.floor(Math.random() * oppDefStops.length)],
+        type: 'punt',
+        scoreAfter: `${runningUt} - ${runningOpp}`
+      });
+    }
 
-      // Opponent Drive
-      const oppDriveRoll = Math.random() * 100;
-      const oppTdThreshold = ((100 - adjusted.winProb) / 100) * 34;
-      const oppFgThreshold = oppTdThreshold + 20;
-      const oppToThreshold = oppFgThreshold + (8 + state.sliders.turnover);
-
-      let oppResult = '';
-      let oppType = '';
-      if (oppDriveRoll < oppTdThreshold) {
-        oppScore += 7;
-        oppResult = `TOUCHDOWN! ${game.opponent} explosive score (7 Pts)`;
-        oppType = 'td';
-      } else if (oppDriveRoll < oppFgThreshold) {
-        oppScore += 3;
-        oppResult = `FIELD GOAL! ${game.opponent} converts red zone kick (3 Pts)`;
-        oppType = 'fg';
-      } else if (oppDriveRoll < oppToThreshold) {
-        oppResult = `TURNOVER! Texas defense forces takeaway!`;
-        oppType = 'turnover';
-      } else {
-        oppResult = `PUNT. Texas pass rush records sack`;
-        oppType = 'punt';
-      }
-
+    // Opponent drive in this quarter
+    if (oppEventIdx < oppEvents.length) {
+      const ev = oppEvents[oppEventIdx++];
+      runningOpp += ev.pts;
+      const desc = ev.type === 'td'
+        ? oppTdPhrases[Math.floor(Math.random() * oppTdPhrases.length)]
+        : oppFgPhrases[Math.floor(Math.random() * oppFgPhrases.length)];
       drives.push({
         quarter: q,
         team: game.oppAbbr,
-        result: oppResult,
-        type: oppType,
-        scoreAfter: `${utScore} - ${oppScore}`
+        result: desc,
+        type: ev.type,
+        scoreAfter: `${runningUt} - ${runningOpp}`
+      });
+    } else {
+      drives.push({
+        quarter: q,
+        team: game.oppAbbr,
+        result: utDefStops[Math.floor(Math.random() * utDefStops.length)],
+        type: 'punt',
+        scoreAfter: `${runningUt} - ${runningOpp}`
       });
     }
   });
 
-  if (utScore === oppScore) {
-    if (adjusted.winProb >= 50) {
-      utScore += 6;
-      drives.push({
-        quarter: 'OVERTIME',
-        team: 'TEXAS 🤘',
-        result: 'WALK-OFF TOUCHDOWN IN OT! TEXAS WINS!',
-        type: 'td',
-        scoreAfter: `${utScore} - ${oppScore}`
-      });
-    } else {
-      oppScore += 6;
-      drives.push({
-        quarter: 'OVERTIME',
-        team: game.oppAbbr,
-        result: `${game.opponent} scores in OT to win`,
-        type: 'td',
-        scoreAfter: `${utScore} - ${oppScore}`
-      });
-    }
+  // Flush any remaining scoring events in Q4
+  while (utEventIdx < utEvents.length) {
+    const ev = utEvents[utEventIdx++];
+    runningUt += ev.pts;
+    const desc = ev.type === 'td'
+      ? utTdPhrases[Math.floor(Math.random() * utTdPhrases.length)]
+      : utFgPhrases[Math.floor(Math.random() * utFgPhrases.length)];
+    drives.push({
+      quarter: '4TH QUARTER',
+      team: 'TEXAS 🤘',
+      result: desc,
+      type: ev.type,
+      scoreAfter: `${runningUt} - ${runningOpp}`
+    });
   }
 
-  return { utScore, oppScore, drives };
+  while (oppEventIdx < oppEvents.length) {
+    const ev = oppEvents[oppEventIdx++];
+    runningOpp += ev.pts;
+    const desc = ev.type === 'td'
+      ? oppTdPhrases[Math.floor(Math.random() * oppTdPhrases.length)]
+      : oppFgPhrases[Math.floor(Math.random() * oppFgPhrases.length)];
+    drives.push({
+      quarter: '4TH QUARTER',
+      team: game.oppAbbr,
+      result: desc,
+      type: ev.type,
+      scoreAfter: `${runningUt} - ${runningOpp}`
+    });
+  }
+
+  return { utScore: targetUt, oppScore: targetOpp, drives };
 }
 
 // Render Schedule Grid Cards
