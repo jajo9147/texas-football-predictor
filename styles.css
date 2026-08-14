@@ -232,10 +232,42 @@ button, input, select {
   transform: scale(0.96);
 }
 
-.sound-btn.active {
-  border-color: var(--color-orange-glow);
-  color: var(--color-orange-light);
-  background: var(--color-orange-dim);
+.countdown-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(191, 87, 0, 0.45);
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius-full);
+  box-shadow: 0 0 14px rgba(191, 87, 0, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: var(--transition-smooth);
+}
+
+.countdown-badge span {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #FFF;
+  white-space: nowrap;
+}
+
+.countdown-badge i {
+  font-size: 0.85rem;
+  color: var(--color-orange-glow);
+  animation: pulseBeacon 2s infinite;
+}
+
+@media (max-width: 640px) {
+  .countdown-badge {
+    padding: 0.35rem 0.6rem;
+  }
+  .countdown-badge span {
+    font-size: 0.68rem;
+  }
 }
 
 .hype-btn {

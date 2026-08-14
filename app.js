@@ -444,68 +444,45 @@ SCHEDULE_DATA.forEach(game => {
   state.gamePicks[game.id] = game.baseWinProb >= 50 ? 'W' : 'L';
 });
 
-// Sound Synthesizer via Web Audio API
-let audioCtx = null;
+// Kickoff Countdown Engine
+function updateKickoffCountdown() {
+  const countdownEl = document.getElementById('countdownText');
+  if (!countdownEl) return;
 
-function initAudio() {
-  if (!audioCtx) {
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    audioCtx = new AudioContext();
+  const currentLocks = WEEK_LOCK_PRESETS[state.simWeek] || {};
+  let nextGame = null;
+  for (const game of SCHEDULE_DATA) {
+    if (!currentLocks[game.id] || !currentLocks[game.id].isFinal) {
+      nextGame = game;
+      break;
+    }
+  }
+
+  if (!nextGame) {
+    countdownEl.innerText = '🏆 CFP PLAYOFF POSTSEASON';
+    return;
+  }
+
+  const gameDate = new Date(`${nextGame.date} 12:00:00 CDT`);
+  const now = new Date();
+  const diffMs = gameDate.getTime() - now.getTime();
+  const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+
+  const oppText = nextGame.isHome ? `VS ${nextGame.oppAbbr}` : `@ ${nextGame.oppAbbr}`;
+
+  if (diffDays > 1) {
+    countdownEl.innerText = `${diffDays} DAYS TO KICKOFF (${oppText})`;
+  } else if (diffDays === 1) {
+    countdownEl.innerText = `1 DAY TO KICKOFF (${oppText})`;
+  } else if (diffDays === 0) {
+    countdownEl.innerText = `🏈 GAMEDAY TODAY! (${oppText})`;
+  } else {
+    countdownEl.innerText = `NEXT: ${oppText} • ${nextGame.week}`;
   }
 }
 
 function playSound(type) {
-  if (!state.audioEnabled) return;
-  try {
-    initAudio();
-    if (audioCtx.state === 'suspended') {
-      audioCtx.resume();
-    }
-    const now = audioCtx.currentTime;
-
-    if (type === 'whistle') {
-      const osc1 = audioCtx.createOscillator();
-      const osc2 = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc1.frequency.setValueAtTime(2600, now);
-      osc2.frequency.setValueAtTime(2850, now);
-      gain.gain.setValueAtTime(0.15, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
-
-      osc1.connect(gain);
-      osc2.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc1.start(now);
-      osc2.start(now);
-      osc1.stop(now + 0.35);
-      osc2.stop(now + 0.35);
-    } else if (type === 'horn') {
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = 'sawtooth';
-      osc.frequency.setValueAtTime(220, now);
-      osc.frequency.linearRampToValueAtTime(330, now + 0.4);
-      gain.gain.setValueAtTime(0.2, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
-
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start(now);
-      osc.stop(now + 0.8);
-    } else if (type === 'click') {
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.frequency.setValueAtTime(800, now);
-      gain.gain.setValueAtTime(0.05, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start(now);
-      osc.stop(now + 0.08);
-    }
-  } catch (e) {
-    console.log('Audio error:', e);
-  }
+  // Silent audio mode
 }
 
 // Calculate adjusted win probability and scores based on sliders & SEC Road Chaos
@@ -570,6 +547,7 @@ function updatePicksFromTuning() {
   });
   renderSchedule();
   updateTopMetricsAndPlayoff();
+  updateKickoffCountdown();
 }
 
 // Monte Carlo Drive Simulator for Game Modal
