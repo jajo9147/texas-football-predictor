@@ -1185,20 +1185,27 @@ function drawHypeCard() {
   ctx.beginPath();
   ctx.roundRect(60, 60, w - 120, 96, 20);
   ctx.fill();
+  ctx.strokeStyle = '#FF7A18';
+  ctx.lineWidth = 3;
+  ctx.stroke();
 
   ctx.fillStyle = '#FFFFFF';
-  ctx.font = 'bold 32px Outfit, sans-serif';
+  ctx.font = 'bold 34px Outfit, sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('🤘 TEXAS LONGHORNS • GAMEDAY PREVIEW', w / 2, 120);
+  ctx.textBaseline = 'middle';
+  ctx.fillText('TEXAS LONGHORNS • GAMEDAY PREVIEW', w / 2, 108);
+  ctx.textBaseline = 'alphabetic';
 
   // User Handle / Stamp
   ctx.fillStyle = '#FFB800';
   ctx.font = 'bold 44px Bebas Neue, sans-serif';
+  ctx.textAlign = 'center';
   ctx.fillText(userHandle.toUpperCase(), w / 2, 230);
 
   // Matchup Title
   ctx.fillStyle = '#9CA3AF';
   ctx.font = '28px Outfit, sans-serif';
+  ctx.textAlign = 'center';
   ctx.fillText(`${game.week} • ${game.stadium.toUpperCase()}`, w / 2, 285);
 
   // Big Score Card Box
@@ -1214,7 +1221,7 @@ function drawHypeCard() {
   ctx.fillStyle = '#FF9B42';
   ctx.font = 'bold 72px Bebas Neue, sans-serif';
   ctx.textAlign = 'left';
-  ctx.fillText('TEXAS 🤘', 120, 460);
+  ctx.fillText('TEXAS', 120, 460);
   ctx.fillStyle = '#FFFFFF';
   ctx.font = 'bold 128px Bebas Neue, sans-serif';
   ctx.fillText(`${adj.projUt}`, 120, 620);
@@ -1261,7 +1268,7 @@ function drawHypeCard() {
   ctx.fillStyle = '#FF7A18';
   ctx.font = 'bold 32px Bebas Neue, sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('HOOK \'EM HORNS 🤘 • DKR TEXAS MEMORIAL STADIUM', w / 2, 1330);
+  ctx.fillText('HOOK \'EM HORNS • DKR TEXAS MEMORIAL STADIUM', w / 2, 1330);
 
   ctx.fillStyle = '#9CA3AF';
   ctx.font = '24px Outfit, sans-serif';
