@@ -1187,9 +1187,9 @@ function drawHypeCard() {
   ctx.fill();
 
   ctx.fillStyle = '#FFFFFF';
-  ctx.font = 'bold 36px Outfit, sans-serif';
+  ctx.font = 'bold 32px Outfit, sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('🏈 TEXAS LONGHORNS AI GAME DAY ORACLE', w / 2, 122);
+  ctx.fillText('🤘 TEXAS LONGHORNS • GAMEDAY PREVIEW', w / 2, 120);
 
   // User Handle / Stamp
   ctx.fillStyle = '#FFB800';
@@ -1236,7 +1236,7 @@ function drawHypeCard() {
   ctx.fillStyle = '#FFFFFF';
   ctx.font = 'bold 128px Bebas Neue, sans-serif';
   ctx.fillText(`${adj.projOpp}`, w - 120, 620);
-  ctx.fillStyle = '#9CA3AF';
+  ctx.fillStyle = '#94A3AF';
   ctx.font = 'bold 28px Outfit, sans-serif';
   ctx.fillText(`SPREAD: UT ${game.vegasSpread > 0 ? `+${game.vegasSpread}` : game.vegasSpread}`, w - 120, 700);
 
@@ -1252,7 +1252,7 @@ function drawHypeCard() {
   ctx.fillStyle = '#FFB800';
   ctx.font = 'bold 28px Outfit, sans-serif';
   ctx.textAlign = 'left';
-  ctx.fillText('🔥 LOCK OF THE WEEK / HOT TAKE:', 110, 890);
+  ctx.fillText('🔥 LOCK OF THE WEEK / MATCHUP TAKE:', 110, 890);
 
   ctx.fillStyle = '#FFFFFF';
   wrapCanvasText(ctx, hotTake, 110, 955, w - 220, 46, 30);
@@ -1261,11 +1261,11 @@ function drawHypeCard() {
   ctx.fillStyle = '#FF7A18';
   ctx.font = 'bold 32px Bebas Neue, sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('SIMULATED VIA ANTIGRAVITY AI ENGINE • HOOK \'EM 🤘', w / 2, 1330);
+  ctx.fillText('HOOK \'EM HORNS 🤘 • DKR TEXAS MEMORIAL STADIUM', w / 2, 1330);
 
   ctx.fillStyle = '#9CA3AF';
   ctx.font = '24px Outfit, sans-serif';
-  ctx.fillText('10,000 Monte Carlo Drives • Real-time SEC Analytics', w / 2, 1380);
+  ctx.fillText('Official Fall 2026 SEC Football Matchup Preview', w / 2, 1380);
 }
 
 // Helper to wrap and dynamically fit text on Canvas
