@@ -388,6 +388,7 @@ const state = {
     turnover: 0,
     crowd: 100
   },
+  gameSliders: {}, // id -> { qbRating, defense, turnover, crowd, isCustom: true }
   simOverrides: {},
   audioEnabled: false
 };
@@ -522,7 +523,8 @@ function calculateAdjustedMatchup(game) {
       projOpp: lock.scoreOpp,
       isLocked: true,
       isWin: lock.isWin,
-      summary: lock.summary
+      summary: lock.summary,
+      isCustomTuned: false
     };
   }
 
@@ -531,21 +533,25 @@ function calculateAdjustedMatchup(game) {
     return state.simOverrides[game.id];
   }
 
-  const qbFactor = (state.sliders.qbRating - 100) * 0.36;
-  const defFactor = (state.sliders.defense - 100) * 0.28;
-  let toFactor = state.sliders.turnover * 3.8;
+  // Use matchup-specific custom tuning if defined, otherwise fall back to global season sliders
+  const activeSliders = (state.gameSliders && state.gameSliders[game.id]) || state.sliders;
+  const isCustomTuned = !!(state.gameSliders && state.gameSliders[game.id] && state.gameSliders[game.id].isCustom);
+
+  const qbFactor = (activeSliders.qbRating - 100) * 0.36;
+  const defFactor = (activeSliders.defense - 100) * 0.28;
+  let toFactor = activeSliders.turnover * 3.8;
 
   // SEC Road Chaos: Hostile venues amplify negative turnover luck and low QB performance
   if (SEC_ROAD_CHAOS_VENUES.includes(game.id)) {
-    if (state.sliders.turnover < 0) {
+    if (activeSliders.turnover < 0) {
       toFactor *= 1.5; // Amplified road turnover trap
     }
-    if (state.sliders.qbRating < 100) {
-      toFactor -= (100 - state.sliders.qbRating) * 0.12;
+    if (activeSliders.qbRating < 100) {
+      toFactor -= (100 - activeSliders.qbRating) * 0.12;
     }
   }
 
-  const crowdImpact = game.isHome ? (state.sliders.crowd - 100) * 0.16 : -(state.sliders.crowd - 100) * 0.16;
+  const crowdImpact = game.isHome ? (activeSliders.crowd - 100) * 0.16 : -(activeSliders.crowd - 100) * 0.16;
 
   let winProb = game.baseWinProb + qbFactor + defFactor + toFactor + crowdImpact;
   winProb = Math.max(1.0, Math.min(99.4, winProb));
@@ -560,7 +566,8 @@ function calculateAdjustedMatchup(game) {
     projUt,
     projOpp,
     isLocked: false,
-    isWin: winProb >= 50.0
+    isWin: winProb >= 50.0,
+    isCustomTuned
   };
 }
 
@@ -833,6 +840,7 @@ function renderSchedule() {
           <div class="stadium-location">
             <i class="fa-solid fa-location-dot"></i> ${game.isHome ? 'DKR Austin' : game.location}
             ${isHostileRoad ? `<span class="road-trap-badge"><i class="fa-solid fa-triangle-exclamation"></i> SEC ROAD TRAP</span>` : ''}
+            ${adj.isCustomTuned ? `<span class="custom-tuned-badge"><i class="fa-solid fa-sliders"></i> CUSTOM TUNED</span>` : ''}
             ${adj.isLocked ? `<span class="locked-game-badge"><i class="fa-solid fa-lock"></i> OFFICIAL FINAL</span>` : ''}
           </div>
         </div>
@@ -844,7 +852,7 @@ function renderSchedule() {
             <div class="team-logo-circle ut-logo">🤘</div>
             <div class="team-text">
               <span class="team-abbr">TEXAS</span>
-              <span class="team-ranking-sub">#1 AP</span>
+              <span class="team-ranking-sub">#5 AP</span>
             </div>
           </div>
 
@@ -1126,8 +1134,67 @@ function openSimModal(gameId) {
   // Draw Radar Chart
   drawRadarChart(game);
 
+  // Sync Single-Game AI Tuning Sliders
+  const gameSliders = (state.gameSliders && state.gameSliders[game.id]) || state.sliders;
+  const gameQbSlider = document.getElementById('gameQbSlider');
+  const gameDefSlider = document.getElementById('gameDefSlider');
+  const gameToSlider = document.getElementById('gameToSlider');
+  const gameCrowdSlider = document.getElementById('gameCrowdSlider');
+
+  if (gameQbSlider) gameQbSlider.value = gameSliders.qbRating;
+  if (gameDefSlider) gameDefSlider.value = gameSliders.defense;
+  if (gameToSlider) gameToSlider.value = gameSliders.turnover;
+  if (gameCrowdSlider) gameCrowdSlider.value = gameSliders.crowd;
+
+  updateGameSliderDisplays(gameSliders);
+
+  // Update Game Preset Button Active State
+  document.querySelectorAll('.game-preset-btn').forEach(b => b.classList.remove('active'));
+  const activePresetKey = (state.gameSliders && state.gameSliders[game.id] && state.gameSliders[game.id].isCustom) ? '' : 'baseline';
+  const matchingPreset = document.querySelector(`.game-preset-btn[data-gamepreset="${activePresetKey || 'baseline'}"]`);
+  if (matchingPreset) matchingPreset.classList.add('active');
+
   // Open Modal
   document.getElementById('simModal').classList.add('open');
+}
+
+// Display text formatter for Single-Game Sliders
+function updateGameSliderDisplays(sliders) {
+  const qVal = sliders.qbRating;
+  const qEl = document.getElementById('gameQbValDisplay');
+  if (qEl) {
+    qEl.innerText = qVal >= 140 ? `${qVal}% (🔥 Heisman Winner / God Tier)` :
+                    qVal >= 115 ? `${qVal}% (Elite All-American)` :
+                    qVal >= 90 ? `${qVal}% (Heisman Form)` :
+                    qVal >= 65 ? `${qVal}% (⚠️ Struggling / Interceptions)` :
+                    `${qVal}% (🚨 Benched / Disaster)`;
+  }
+
+  const dVal = sliders.defense;
+  const dEl = document.getElementById('gameDefValDisplay');
+  if (dEl) {
+    dEl.innerText = dVal >= 140 ? `${dVal}% (🛡️ Steel Curtain / Lockdown)` :
+                    dVal >= 115 ? `${dVal}% (Top 5 Defense)` :
+                    dVal >= 90 ? `${dVal}% (Dominant SEC Front)` :
+                    dVal >= 65 ? `${dVal}% (⚠️ Vulnerable Pass Rush)` :
+                    `${dVal}% (🚨 Paper Defense / Bleeding Points)`;
+  }
+
+  const tVal = sliders.turnover;
+  const tEl = document.getElementById('gameToValDisplay');
+  if (tEl) {
+    tEl.innerText = tVal > 0 ? `+${tVal} (⚡ Takeaway Frenzy)` :
+                    tVal < 0 ? `${tVal} (🚨 Costly Fumbles & Picks)` :
+                    'Neutral (0)';
+  }
+
+  const cVal = sliders.crowd;
+  const cEl = document.getElementById('gameCrowdValDisplay');
+  if (cEl) {
+    cEl.innerText = cVal > 115 ? `Deafening 125dB+ Hostility (${cVal}%)` :
+                    cVal < 85 ? `Silent / Stunned Stadium (${cVal}%)` :
+                    `Standard Crowd (${cVal}%)`;
+  }
 }
 
 // Canvas-Based Radar Chart Renderer
@@ -1676,6 +1743,203 @@ document.addEventListener('DOMContentLoaded', () => {
         runSimBtn.disabled = false;
 
         showToast(`⚡ 10,000 Drives Re-simulated: Texas ${simResult.projUt} - ${game.oppAbbr} ${simResult.projOpp}! Dashboard card updated.`);
+      }, 300);
+    });
+  }
+
+  // Single-Game Slider Event Listeners
+  const gameQbSlider = document.getElementById('gameQbSlider');
+  const gameDefSlider = document.getElementById('gameDefSlider');
+  const gameToSlider = document.getElementById('gameToSlider');
+  const gameCrowdSlider = document.getElementById('gameCrowdSlider');
+
+  function handleGameSliderChange() {
+    if (!state.activeModalGame) return;
+    const game = state.activeModalGame;
+
+    state.gameSliders[game.id] = {
+      qbRating: parseInt(gameQbSlider.value, 10),
+      defense: parseInt(gameDefSlider.value, 10),
+      turnover: parseInt(gameToSlider.value, 10),
+      crowd: parseInt(gameCrowdSlider.value, 10),
+      isCustom: true
+    };
+
+    delete state.simOverrides[game.id];
+    updateGameSliderDisplays(state.gameSliders[game.id]);
+
+    document.querySelectorAll('.game-preset-btn').forEach(b => b.classList.remove('active'));
+
+    const adjusted = calculateAdjustedMatchup(game);
+    const sim = simulateGameDrives(game, adjusted);
+
+    // Update modal score and win prob
+    document.getElementById('simHomeScore').innerText = sim.utScore;
+    document.getElementById('simAwayScore').innerText = sim.oppScore;
+    document.getElementById('simUtWinProbText').innerText = `TEXAS WIN PROB: ${adjusted.winProb}%`;
+    document.getElementById('simOppWinProbText').innerText = `${game.oppAbbr}: ${(100 - adjusted.winProb).toFixed(1)}%`;
+    document.getElementById('simProbFill').style.width = `${adjusted.winProb}%`;
+
+    // Render drives
+    const drivesContainer = document.getElementById('simDrivesContainer');
+    if (drivesContainer) {
+      drivesContainer.innerHTML = sim.drives.map(d => `
+        <div class="drive-item ${d.type}">
+          <div>
+            <span class="drive-team text-white">[${d.quarter}] ${d.team}:</span>
+            <span>${d.result}</span>
+          </div>
+          <div class="drive-result">${d.scoreAfter}</div>
+        </div>
+      `).join('');
+    }
+
+    state.gamePicks[game.id] = adjusted.isWin ? 'W' : 'L';
+    renderSchedule();
+    updateTopMetricsAndPlayoff();
+  }
+
+  if (gameQbSlider) gameQbSlider.addEventListener('input', handleGameSliderChange);
+  if (gameDefSlider) gameDefSlider.addEventListener('input', handleGameSliderChange);
+  if (gameToSlider) gameToSlider.addEventListener('input', handleGameSliderChange);
+  if (gameCrowdSlider) gameCrowdSlider.addEventListener('input', handleGameSliderChange);
+
+  // Single-Game Quick Scenario Presets
+  document.querySelectorAll('.game-preset-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (!state.activeModalGame) return;
+      const game = state.activeModalGame;
+      const preset = btn.getAttribute('data-gamepreset');
+
+      document.querySelectorAll('.game-preset-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      if (preset === 'baseline') {
+        delete state.gameSliders[game.id];
+        delete state.simOverrides[game.id];
+        const baseSliders = state.sliders;
+        if (gameQbSlider) gameQbSlider.value = baseSliders.qbRating;
+        if (gameDefSlider) gameDefSlider.value = baseSliders.defense;
+        if (gameToSlider) gameToSlider.value = baseSliders.turnover;
+        if (gameCrowdSlider) gameCrowdSlider.value = baseSliders.crowd;
+        updateGameSliderDisplays(baseSliders);
+        showToast(`🎯 ${game.opponent} reset to global season baseline.`);
+      } else if (preset === 'qb-slump') {
+        state.gameSliders[game.id] = { qbRating: 65, defense: 135, turnover: -1, crowd: 100, isCustom: true };
+        if (gameQbSlider) gameQbSlider.value = 65;
+        if (gameDefSlider) gameDefSlider.value = 135;
+        if (gameToSlider) gameToSlider.value = -1;
+        if (gameCrowdSlider) gameCrowdSlider.value = 100;
+        updateGameSliderDisplays(state.gameSliders[game.id]);
+        showToast(`⚠️ Scenario: Arch struggles vs ${game.opponent}, defense carries.`);
+      } else if (preset === 'blowout') {
+        state.gameSliders[game.id] = { qbRating: 145, defense: 130, turnover: 2, crowd: 120, isCustom: true };
+        if (gameQbSlider) gameQbSlider.value = 145;
+        if (gameDefSlider) gameDefSlider.value = 130;
+        if (gameToSlider) gameToSlider.value = 2;
+        if (gameCrowdSlider) gameCrowdSlider.value = 120;
+        updateGameSliderDisplays(state.gameSliders[game.id]);
+        showToast(`🔥 Scenario: Flawless Texas blowout vs ${game.opponent}!`);
+      } else if (preset === 'turnover-trap') {
+        state.gameSliders[game.id] = { qbRating: 80, defense: 85, turnover: -2, crowd: 70, isCustom: true };
+        if (gameQbSlider) gameQbSlider.value = 80;
+        if (gameDefSlider) gameDefSlider.value = 85;
+        if (gameToSlider) gameToSlider.value = -2;
+        if (gameCrowdSlider) gameCrowdSlider.value = 70;
+        updateGameSliderDisplays(state.gameSliders[game.id]);
+        showToast(`🚨 Scenario: Turnover disaster / upset trap vs ${game.opponent}!`);
+      }
+
+      delete state.simOverrides[game.id];
+      const adjusted = calculateAdjustedMatchup(game);
+      const sim = simulateGameDrives(game, adjusted);
+
+      document.getElementById('simHomeScore').innerText = sim.utScore;
+      document.getElementById('simAwayScore').innerText = sim.oppScore;
+      document.getElementById('simUtWinProbText').innerText = `TEXAS WIN PROB: ${adjusted.winProb}%`;
+      document.getElementById('simOppWinProbText').innerText = `${game.oppAbbr}: ${(100 - adjusted.winProb).toFixed(1)}%`;
+      document.getElementById('simProbFill').style.width = `${adjusted.winProb}%`;
+
+      const drivesContainer = document.getElementById('simDrivesContainer');
+      if (drivesContainer) {
+        drivesContainer.innerHTML = sim.drives.map(d => `
+          <div class="drive-item ${d.type}">
+            <div>
+              <span class="drive-team text-white">[${d.quarter}] ${d.team}:</span>
+              <span>${d.result}</span>
+            </div>
+            <div class="drive-result">${d.scoreAfter}</div>
+          </div>
+        `).join('');
+      }
+
+      state.gamePicks[game.id] = adjusted.isWin ? 'W' : 'L';
+      renderSchedule();
+      updateTopMetricsAndPlayoff();
+    });
+  });
+
+  // Reset Game Tuning Button
+  const resetGameBtn = document.getElementById('resetGameTuningBtn');
+  if (resetGameBtn) {
+    resetGameBtn.addEventListener('click', () => {
+      if (!state.activeModalGame) return;
+      const game = state.activeModalGame;
+      delete state.gameSliders[game.id];
+      delete state.simOverrides[game.id];
+
+      const baseSliders = state.sliders;
+      if (gameQbSlider) gameQbSlider.value = baseSliders.qbRating;
+      if (gameDefSlider) gameDefSlider.value = baseSliders.defense;
+      if (gameToSlider) gameToSlider.value = baseSliders.turnover;
+      if (gameCrowdSlider) gameCrowdSlider.value = baseSliders.crowd;
+      updateGameSliderDisplays(baseSliders);
+
+      document.querySelectorAll('.game-preset-btn').forEach(b => b.classList.remove('active'));
+      const baseBtn = document.querySelector('.game-preset-btn[data-gamepreset="baseline"]');
+      if (baseBtn) baseBtn.classList.add('active');
+
+      const adjusted = calculateAdjustedMatchup(game);
+      const sim = simulateGameDrives(game, adjusted);
+
+      document.getElementById('simHomeScore').innerText = sim.utScore;
+      document.getElementById('simAwayScore').innerText = sim.oppScore;
+      document.getElementById('simUtWinProbText').innerText = `TEXAS WIN PROB: ${adjusted.winProb}%`;
+      document.getElementById('simOppWinProbText').innerText = `${game.oppAbbr}: ${(100 - adjusted.winProb).toFixed(1)}%`;
+      document.getElementById('simProbFill').style.width = `${adjusted.winProb}%`;
+
+      state.gamePicks[game.id] = adjusted.isWin ? 'W' : 'L';
+      renderSchedule();
+      updateTopMetricsAndPlayoff();
+      showToast(`🔄 ${game.opponent} restored to season baseline.`);
+    });
+  }
+
+  // Apply & Re-simulate with this Tuning Button
+  const applyAndSimBtn = document.getElementById('applyAndSimGameBtn');
+  if (applyAndSimBtn) {
+    applyAndSimBtn.addEventListener('click', () => {
+      if (!state.activeModalGame) return;
+      const game = state.activeModalGame;
+
+      applyAndSimBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> RUNNING 10,000 DRIVES...';
+      applyAndSimBtn.disabled = true;
+
+      setTimeout(() => {
+        const simResult = runMonteCarloMatchupSimulation(game);
+        openSimModal(game.id);
+
+        const drivesTab = document.querySelector('.sub-tab[data-subtab="drives"]');
+        if (drivesTab) drivesTab.click();
+
+        renderSchedule();
+        updateTopMetricsAndPlayoff();
+        updateKickoffCountdown();
+
+        applyAndSimBtn.innerHTML = '<i class="fa-solid fa-bolt"></i> Apply & Re-Simulate 10,000 Drives';
+        applyAndSimBtn.disabled = false;
+
+        showToast(`⚡ Custom 10,000 Drives Simulated: Texas ${simResult.projUt} - ${game.oppAbbr} ${simResult.projOpp}!`);
       }, 300);
     });
   }
