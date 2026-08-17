@@ -1729,10 +1729,13 @@ button, input, select {
 
 .modal-footer {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   border-top: 1px solid var(--color-border);
-  padding-top: 0.85rem;
+  padding-top: 1rem;
+  margin-top: 0.5rem;
   flex-shrink: 0;
+  width: 100%;
+  position: static !important;
 }
 
 .card-export-btn {
@@ -1740,7 +1743,22 @@ button, input, select {
   color: #FFF;
   border: none;
   width: 100%;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+  transition: var(--transition-smooth);
+}
+
+.card-export-btn:hover {
+  background: linear-gradient(135deg, #3B82F6, #2563EB);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+  transform: translateY(-1px);
 }
 
 /* Card Modal */
@@ -2225,29 +2243,29 @@ button, input, select {
 
 .game-preset-btn {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   font-weight: 700;
-  padding: 0.4rem 0.75rem;
+  padding: 0.45rem 0.85rem;
   border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.08);
   border: 1px solid var(--color-border);
-  color: var(--color-text);
+  color: #E5E7EB !important;
   cursor: pointer;
   transition: all var(--transition-fast);
 }
 
 .game-preset-btn:hover {
-  background: rgba(255, 107, 0, 0.15);
-  border-color: var(--color-orange);
-  color: #FFFFFF;
+  background: rgba(255, 122, 24, 0.2);
+  border-color: var(--color-orange-glow);
+  color: #FFFFFF !important;
 }
 
 .game-preset-btn.active {
-  background: var(--color-orange);
-  border-color: var(--color-orange-light);
-  color: #000000;
-  font-weight: 800;
-  box-shadow: 0 0 12px rgba(255, 107, 0, 0.4);
+  background: linear-gradient(135deg, var(--color-burnt-orange), var(--color-orange-glow)) !important;
+  border: 1px solid var(--color-orange-light) !important;
+  color: #FFFFFF !important;
+  font-weight: 800 !important;
+  box-shadow: 0 0 16px rgba(255, 122, 24, 0.55) !important;
 }
 
 .game-sliders-grid {
