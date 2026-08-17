@@ -1939,7 +1939,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const apPill = document.querySelector('.ap-rank-pill');
       if (apPill) {
-        apPill.innerHTML = `<i class="fa-solid fa-ranking-star"></i> AP POLL: <strong>#4 TEXAS</strong> (1,386 PTS)`;
+        apPill.innerHTML = `<i class="fa-solid fa-ranking-star"></i> AP POLL: <strong>#5 TEXAS</strong> (1,386 PTS)`;
       }
 
       updatePicksFromTuning();
