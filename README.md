@@ -28,3 +28,11 @@ An interactive College Football Season Predictor, Monte Carlo Game Simulation Ar
    - In your GitHub repo, go to **Settings** > **Pages**.
    - Under **Build and deployment**, set Source to **Deploy from a branch** and select `main` branch.
    - Your live site will be ready at `https://<your-username>.github.io/texas-football-predictor/`!
+
+---
+
+## 👨‍💻 Creator & Owner
+**Jake Johnson**
+- LinkedIn: [https://www.linkedin.com/in/jake-johnson-/](https://www.linkedin.com/in/jake-johnson-/)
+- GitHub Portfolio: [https://jajo9147.github.io/](https://jajo9147.github.io/)
+
